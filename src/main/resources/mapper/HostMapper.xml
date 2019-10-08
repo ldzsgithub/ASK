@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy23.mapper.HostMapper">
+
+	<sql id="Base_Column_List">
+		host_id,host_address, host_name, host_position, host_remarks, host_enable, company_id, department_id,
+		number_channels,register_card,host_collectiontime,trans_status
+	</sql>
+	
+	<resultMap id="BaseResultMap" type="com.jy23.entity.Host">
+        <id property="hostId" column="host_id" jdbcType="INTEGER"/>
+        <result property="hostAddress" column="host_address" jdbcType="INTEGER"/>
+        <result property="hostName" column="host_name" jdbcType="VARCHAR"/>
+        <result property="hostPosition" column="host_position" jdbcType="VARCHAR"/>
+        <result property="hostRemarks" column="host_remarks" jdbcType="VARCHAR"/>
+        <result property="hostEnable" column="host_enable" jdbcType="INTEGER"/>
+        <result property="companyId" column="company_id" jdbcType="INTEGER"/>
+        <result property="departmentId" column="department_id" jdbcType="INTEGER"/>
+        <result property="numberChannels" column="number_channels" jdbcType="INTEGER"/>
+        <result property="registerCard" column="register_card" jdbcType="VARCHAR"/>
+        <result property="hostCollectiontime" column="host_collectiontime" jdbcType="INTEGER"/>
+        <result property="transStatus" column="trans_status" jdbcType="INTEGER"/>
+    </resultMap>
+	
+	<select id="findHostSelective" parameterType="com.jy23.entity.Host" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from Ask_host
+        <where>
+            <if test="hostAddress != null">
+                AND host_address = #{hostAddress}
+            </if>
+            <if test="hostName != null">
+                AND host_name like ('%'+#{hostName}+'%')
+            </if>
+            <if test="hostPosition != null">
+                AND host_position = #{hostPosition}
+            </if>
+            <if test="hostRemarks != null">
+                AND host_remarks = #{hostRemarks}
+            </if>
+            <if test="companyId != null">
+                AND company_id = #{companyId}
+            </if>
+            <if test="departmentId != null">
+                AND department_id = #{departmentId}
+            </if>
+            <if test="numberChannels != null">
+                AND number_channels = #{numberChannels}
+            </if>
+            <if test="registerCard != null">
+                AND register_card = #{registerCard}
+            </if>
+            <if test="hostCollectiontime != null">
+                AND host_collectiontime = #{hostCollectiontime}
+            </if>
+        </where>
+    </select>
+    
+    <select id="count" parameterType="com.jy23.entity.Host" resultType="java.lang.Integer">
+        select
+        count(*)
+        from Ask_host
+        <where>
+            <if test="hostAddress != null">
+                AND host_address = #{hostAddress}
+            </if>
+            <if test="hostName != null">
+                AND host_name like ('%'+#{hostName}+'%')
+            </if>
+            <if test="hostPosition != null">
+                AND host_position = #{hostPosition}
+            </if>
+            <if test="hostRemarks != null">
+                AND host_remarks = #{hostRemarks}
+            </if>
+            <if test="companyId != null">
+                AND company_id = #{companyId}
+            </if>
+            <if test="departmentId != null">
+                AND department_id = #{departmentId}
+            </if>
+            <if test="numberChannels != null">
+                AND number_channels = #{numberChannels}
+            </if>
+            <if test="registerCard != null">
+                AND register_card = #{registerCard}
+            </if>
+            <if test="hostCollectiontime != null">
+                AND host_collectiontime = #{hostCollectiontime}
+            </if>
+        </where>
+    </select>
+    
+    <select id="findByPrimaryKey" parameterType="com.jy23.entity.Host" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        Ask_host
+        WHERE
+        host_id = #{hostId}
+    </select>
+    
+    <update id="updateSelective" parameterType="com.jy23.entity.Host">
+        update Ask_host
+        <set>
+            <if test="hostAddress != null ">
+                host_address = #{hostAddress},
+            </if>
+            <if test="hostName != null ">
+                host_name = #{hostName},
+            </if>
+            <if test="hostPosition != null ">
+                host_position = #{hostPosition},
+            </if>
+            <if test="hostRemarks != null ">
+                host_remarks = #{hostRemarks},
+            </if>
+            <if test="hostEnable != null ">
+                host_enable = #{hostEnable},
+            </if>
+            <if test="companyId != null ">
+                company_id = #{companyId},
+            </if>
+            <if test="departmentId != null ">
+                department_id = #{departmentId},
+            </if>
+            <if test="numberChannels != null ">
+                number_channels = #{numberChannels},
+            </if>
+            <if test="registerCard != null ">
+                register_card = #{registerCard},
+            </if>
+            <if test="hostCollectiontime != null ">
+                host_collectiontime = #{hostCollectiontime},
+            </if>
+            <if test="transStatus != null ">
+                trans_status = #{transStatus},
+            </if>
+        </set>
+        where host_id = #{hostId,jdbcType=INTEGER}
+    </update>
+    
+    <insert id="insertSelective" parameterType="com.jy23.entity.Host" useGeneratedKeys="true" keyProperty="hostId">
+        INSERT INTO Ask_host
+        <trim prefix=" (" suffix=")" suffixOverrides=",">
+        		host_id,
+            <if test="hostAddress != null">
+                host_address,
+            </if>
+            <if test="hostName != null">
+                host_name,
+            </if>
+            <if test="hostPosition != null">
+                host_position,
+            </if>
+            <if test="hostRemarks != null">
+                host_remarks,
+            </if>
+            <if test="hostEnable != null">
+                host_enable,
+            </if>
+            <if test="companyId != null">
+                company_id,
+            </if>
+            <if test="departmentId != null">
+                department_id,
+            </if>
+            <if test="numberChannels != null">
+                number_channels,
+            </if>
+            <if test="registerCard != null">
+                register_card,
+            </if>
+            <if test="hostCollectiontime != null">
+                host_collectiontime,
+            </if>
+            <if test="transStatus != null">
+                trans_status,
+            </if>
+            <if test="orderId != null">
+                order_id,
+            </if>
+        </trim>
+        <trim prefix=" values(" suffix=")" suffixOverrides=",">
+        		(case (select count(*) from Ask_host) when 0 then 1 else (select max(host_id)+1 from Ask_host) end),
+            <if test="hostAddress != null">
+                #{hostAddress},
+            </if>
+            <if test="hostName != null">
+                #{hostName},
+            </if>
+            <if test="hostPosition != null">
+                #{hostPosition},
+            </if>
+            <if test="hostRemarks != null">
+                #{hostRemarks},
+            </if>
+            <if test="hostEnable != null">
+                #{hostEnable},
+            </if>
+            <if test="companyId != null">
+                #{companyId},
+            </if>
+            <if test="departmentId != null">
+                #{departmentId},
+            </if>
+            <if test="numberChannels != null">
+                #{numberChannels},
+            </if>
+            <if test="registerCard != null">
+                #{registerCard},
+            </if>
+            <if test="hostCollectiontime != null">
+                #{hostCollectiontime},
+            </if>
+            <if test="transStatus != null">
+                #{transStatus},
+            </if>
+            <if test="orderId != null">
+                #{orderId},
+            </if>
+        </trim>
+    </insert>
+    
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from Ask_host 
+		where host_id = #{hostId}
+	</delete>
+	
+	<select id="selectHostByQx" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from Ask_host
+        where 
+        host_name  like ('%'+#{hostName}+'%')
+        and
+        department_id in
+        <foreach collection="qx" open="(" separator="," close=")" item="departmentId">
+            #{departmentId}
+        </foreach>
+    </select>
+</mapper>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+    <script src="/lib/echarts/echarts.min.js"></script>
+</body>
+<script>
+var myChart5 = echarts.init(document.getElementById('p5'));
+myChart5.setOption({
+	textStyle: {
+    	fontStyle: 'bolder',
+    	fontSize: 18
+    },
+    series: [
+        {
+            type: 'gauge',
+            detail: {formatter:'{value}%'},
+            data: [{value: 50.00, name: '报警率'}]
+        }
+    ]
+});
+p5();
+function p5(){
+	$.ajax({
+	    type : "post",
+	    url : "pp5",
+	    dataType : "json",
+	    success : function(result) {
+	        if (result) {
+	        	myChart5.setOption({
+	        		series:[{
+	        			data:[{value:result.body*100, name: '报警率'}]
+	        		}]
+	        	});
+	        }
+	    },
+	    erro : function (){
+	    	alert("柱状图数据加载失败");
+	    }
+	})
+}
+setInterval('p5()',2000);
+</script>
+</html>

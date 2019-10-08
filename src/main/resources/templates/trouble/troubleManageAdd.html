@@ -1,0 +1,96 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<header>
+	<head th:include="common/_header.html::commonHeader('新增问题')" />
+</header>
+<body>
+	<article class="page-container">
+		<form id="sForm" name="sForm" method="post" class="form form-horizontal">
+			<table class="table">
+				<tr class="text-c">
+					<td class="text-right"><label><span class="c-red">*</span>标题：</label></td>
+					<td><input type="text" class="input-text" id="troubleTitle" name="troubleTitle" th:value="${trouble.troubleTitle}"></td>
+				</tr>
+				<tr class="text-c">
+					<td class="text-right"><label><span class="c-red">*</span>内容：</label></td>
+					<td><textarea class="input-text" style="height:300px;resize:none;"  id="troubleContent" name="troubleContent" 
+						th:text="${trouble.troubleContent}"></textarea></td>
+				</tr>
+				<tr class="text-c">
+					<td colspan="1" class="text-right"><label><span class="c-red">*</span>负责人：</label></td>
+					<td>
+						<select name="major" id="major" class="input-text">
+                			<option value="-1">全部</option>
+                			<option th:each="u:${user}" th:value="${u.id}" th:text="${u.name}" th:selected="${u.id == trouble.major}"></option>
+            			</select>
+            		</td>
+				</tr>
+				<tr class="text-c">
+					<td colspan="1" class="text-right"><label><span class="c-red">*</span>处理期限：</label></td>
+					<td>
+						<select name="term" id="term" class="input-text">
+                			<option value="1">1天</option>
+                			<option value="2">2天</option>
+                			<option value="3">3天</option>
+                			<option value="5">5天</option>
+                			<option value="7">7天</option>
+                			<option value="10">10天</option>
+                			<option value="15">15天</option>
+                			<option value="30">30天</option>
+            			</select>
+            		</td>
+				</tr>
+				<tr class="text-c ">
+					<td colspan="1" class="text-right"><label><span class="c-red">*</span>紧急程度：</label></td>
+					<td class="text-l">
+						<div class="radio-box" id="">
+							<input type="radio" id="troubleLevel-1" name="troubleLevel" th:value="1" th:checked="${trouble.troubleLevel==1}">
+							<label for="troubleLevel-1">普通</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" id="troubleLevel-2" name="troubleLevel" th:value="2" th:checked="${trouble.troubleLevel==2}">
+							<label for="troubleLevel-2">紧急</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" id="troubleLevel-3" name="troubleLevel" th:value="3" th:checked="${trouble.troubleLevel==3}">
+							<label for="troubleLevel-3">非常紧急</label>
+						</div>
+					</td>
+				</tr>
+				<!-- <tr class="text-c ">
+					<td colspan="1" class="text-right"><label><span class="c-red">*</span>提交人：</label></td>
+					<td><input type="text" class="input-text" id="submitterName" name="submitterName" th:value="${trouble.submitter}"></td>
+				</tr> -->
+				<input hidden id="submitter" name="submitter">
+			</table>
+			<br>
+			<div class="row cl">
+				<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+					<input class="btn btn-primary radius" type="button" onclick="save()" value="新增">
+				</div>
+			</div>
+		</form>
+	</article>
+</body>
+<script>
+    function save() {
+    	if($("#troubleTitle").val()==''||$("#troubleTitle").val()==null){
+    		layer.msg("标题不能为空");
+    		return;
+    	}
+    	if($("#troubleContent").val()==''||$("#troubleContent").val()==null){
+    		layer.msg("内容不能为空");
+    		return;
+    	}
+    	if($("#major").val()==-1||$("#major").val()==null){
+    		layer.msg("请选择负责人");
+    		return;
+    	}
+    	$("#submitter").val(parent.parent.$("#id").val());
+        common_ajax.defaultFunc(
+            'troubleAdd',
+            $("#sForm").serialize(),
+            function (response) {
+            	window.parent.refreshPage();
+            }
+        );
+    }
+    
+</script>
+</html>

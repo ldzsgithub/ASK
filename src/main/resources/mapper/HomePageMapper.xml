@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy23.mapper.HomePageMapper">
+
+<select id="countByProbeType" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+	select count(*) from Ask_Probe
+	<where>
+	Probe_Type=#{probeType}
+	</where>
+</select>
+
+<select id="selectDeptName" resultType="java.lang.String">
+	select Department_Name from ASK_Department
+</select>
+
+<select id="selectDeptData"  resultType="com.jy23.entity.HomePageP2">
+	SELECT
+	sum(case when ASK_Probe.Probe_Type = 1 and (ASK_Probe.realtime_value<![CDATA[ < ]]>ASK_Probe.low_value or ASK_Probe.realtime_value > ASK_Probe.low_value)
+			or ASK_Probe.Probe_Type != 1 and ASK_Probe.realtime_value > ASK_Probe.low_value then 1 else 0 end) as alarm,
+	sum (case when ASK_Probe.Probe_Type = 1 and (ASK_Probe.realtime_value >= ASK_Probe.low_value or ASK_Probe.realtime_value<![CDATA[ <= ]]>ASK_Probe.low_value)
+			or ASK_Probe.Probe_Type != 1 and ASK_Probe.realtime_value <![CDATA[ <= ]]> ASK_Probe.low_value then 1 else 0 end)  as noAlarm
+	from
+	ASK_Probe,Ask_Host,ASK_Department
+	where
+	ASK_Probe.Host_Id=Ask_Host.Host_Id 
+	and ASK_Department.Department_Id=ASK_Host.Department_Id 
+	group by ASK_Department.Department_Id
+</select>
+
+<select id="countAlarmProbe"  resultType="java.lang.Integer">
+	SELECT count(*) from Ask_Probe
+	where
+	Probe_Type = 1 and (realtime_value > high_value or realtime_value<![CDATA[ < ]]>low_value)
+	or  Probe_Type != 1 and realtime_value > low_value
+</select>
+
+<select id="countTolalProbe" resultType="java.lang.Integer">
+	SELECT count(*) from Ask_Probe
+</select>
+
+<select id="selectTrouble" resultType="java.lang.Integer">
+	select COUNT(*) from Ask_trouble where status = 0 and DateDiff(DD,creat_time,GETDATE()) <![CDATA[ <= ]]> #{sDay}
+</select>
+
+</mapper>

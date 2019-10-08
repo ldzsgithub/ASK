@@ -1,0 +1,32 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<style type="text/css">
+		body, html {width: 100%;height: 100%;margin:0;font-family:"微软雅黑";font-family:"微软雅黑";}
+		#allmap{width:100%;height:100%;}
+		p{margin-left:5px; font-size:14px;}
+	</style>
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=iOMediwmdCy9WrORl8ZDD0K5td86xjMr"></script>
+	<title>地图单击事件</title>
+</head>
+<body>
+	<div id="allmap"></div>
+</html>
+<script type="text/javascript">
+	var tileLayer = new BMap.TileLayer();
+	tileLayer.getTilesUrl = function(tileCoord, zoom) {
+    	var x = tileCoord.x;
+    	var y = tileCoord.y;
+    	return '/map/tiles/' + zoom + '/tile-' + x + '_' + y + '.png';
+	}
+	var MyMap = new BMap.MapType('MyMap', tileLayer, {minZoom: 9, maxZoom: 10});
+	var map = new BMap.Map('allmap', {mapType: MyMap});
+	map.centerAndZoom(new BMap.Point(0, 0), 10);
+	map.enableScrollWheelZoom(true);
+	function showInfo(e){
+		alert(e.point.lng + ", " + e.point.lat);
+		window.parent.setLatLng(e.point.lng,e.point.lat);
+	}
+	map.addEventListener("click", showInfo);
+</script>

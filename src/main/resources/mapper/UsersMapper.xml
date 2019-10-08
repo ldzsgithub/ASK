@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy23.mapper.UsersMapper">
+	<resultMap id="BaseResultMap" type="com.jy23.entity.Users">
+		<id property="id" column="id" jdbcType="VARCHAR" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="password" column="password" jdbcType="VARCHAR" />
+		<result property="authority" column="authority" jdbcType="VARCHAR" />
+		<result property="loginflag" column="loginflag" jdbcType="INTEGER" />
+		<result property="phoneNumber" column="phoneNumber" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id,name, password, authority,loginflag,phoneNumber
+	</sql>
+	
+	<select id="checkLogin" parameterType="com.jy23.entity.Users" resultType="java.lang.Integer">
+		select
+		count(*)
+		from Ask_User
+		<where>
+			<if test="name != null">
+			and name=#{name} 
+			</if>
+			<if test="name != null">
+			and password=#{password}
+			</if>
+		</where>
+	</select>
+	
+	<select id="registerCheckUsers" parameterType="java.lang.String" resultType="java.lang.Integer">
+		select
+		count(*)
+		from Ask_User
+		<where>
+			name=#{users} 
+		</where>
+	</select>
+
+	<insert id="insertUsers" parameterType="com.jy23.entity.Users">
+		INSERT INTO Ask_User
+		<trim prefix=" (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="name != null">
+				name,
+			</if>
+			<if test="password != null">
+				password,
+			</if>
+			<if test="authority != null">
+				authority,
+			</if>
+			<if test="loginflag != null">
+				loginflag,
+			</if>
+			<if test="phoneNumber != null">
+				phoneNumber,
+			</if>
+		</trim>
+		<trim prefix=" values(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id},
+			</if>
+			<if test="name != null">
+				#{name},
+			</if>
+			<if test="password != null">
+				#{password},
+			</if>
+			<if test="authority != null">
+				#{authority},
+			</if>
+			<if test="loginflag != null">
+				#{loginflag},
+			</if>
+			<if test="phoneNumber != null">
+				#{phoneNumber},
+			</if>
+		</trim>
+	</insert>
+	
+	<select id="findAllUsers" parameterType="com.jy23.entity.Users" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		Ask_User
+		<where>
+			<if test="id != null">
+				id=#{id}
+			</if>
+			<if test="name!=null">
+				and name=#{name}
+			</if>
+		</where>
+	</select>
+	
+	<update id="updateQx" parameterType="com.jy23.entity.Users">
+		update Ask_User
+		<set>
+			<if test="loginflag != null ">
+				loginflag = #{loginflag},
+			</if>
+				authority = #{authority},
+		</set>
+		<where>
+			id = #{id}
+		</where>
+	</update>
+	
+	<update id="updateUsers" parameterType="com.jy23.entity.Users">
+		update Ask_User
+		<set>
+			<if test="name != null ">
+				name = #{name},
+			</if>
+			<if test="password != null ">
+				password = #{password},
+			</if>
+			<if test="authority != null ">
+				authority = #{authority},
+			</if>
+			<if test="loginflag != null ">
+				loginflag = #{loginflag},
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="deleteUsers" parameterType="java.lang.String">
+		delete from Ask_User
+		where id = #{id}
+	</delete>
+	
+	<select id="findLoginflag" parameterType="java.lang.String" resultType="java.lang.Integer">
+		SELECT
+		loginflag
+		FROM
+		Ask_User
+		<where>
+			name=#{nameId}
+		</where>
+	</select>
+
+	<select id="findUserById" parameterType="java.lang.String" resultType="com.jy23.entity.Users">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		Ask_User
+		<where>
+			id = #{id}
+		</where>
+	</select>
+	
+	<select id="findUsersByAuthority" parameterType="java.lang.Integer" resultType="com.jy23.entity.Users">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		Ask_User
+		<where>
+			(authority like '%,'+#{departmentId,jdbcType=VARCHAR}+',%' or authority like #{departmentId,jdbcType=VARCHAR}+',%') 
+			and (loginflag=3 or loginflag=2)
+		</where>
+	</select>
+	
+	
+</mapper>

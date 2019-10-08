@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy23.mapper.HistoryMapper">
+    <resultMap id="BaseResultMap" type="com.jy23.entity.History">
+        <result property="hostId" column="host_id" jdbcType="INTEGER"/>
+        <result property="a1" column="a1" jdbcType="DOUBLE"/>
+        <result property="a2" column="a2" jdbcType="DOUBLE"/>
+        <result property="a3" column="a3" jdbcType="DOUBLE"/>
+        <result property="a4" column="a4" jdbcType="DOUBLE"/>
+        <result property="a5" column="a5" jdbcType="DOUBLE"/>
+        <result property="a6" column="a6" jdbcType="DOUBLE"/>
+        <result property="a7" column="a7" jdbcType="DOUBLE"/>
+        <result property="a8" column="a8" jdbcType="DOUBLE"/>
+        <result property="a9" column="a9" jdbcType="DOUBLE"/>
+        <result property="a10" column="a10" jdbcType="DOUBLE"/>
+        <result property="a11" column="a11" jdbcType="DOUBLE"/>
+        <result property="a12" column="a12" jdbcType="DOUBLE"/>
+        <result property="a13" column="a13" jdbcType="DOUBLE"/>
+        <result property="a14" column="a14" jdbcType="DOUBLE"/>
+        <result property="a15" column="a15" jdbcType="DOUBLE"/>
+        <result property="a16" column="a16" jdbcType="DOUBLE"/>
+        <result property="historyDate" column="history_date" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+		host_id, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, history_date
+	</sql>
+
+    <insert id="insertSelective" parameterType="com.jy23.entity.History">
+        INSERT INTO Ask_history_201805
+        <trim prefix=" (" suffix=")" suffixOverrides=",">
+            <if test="hostId != null">
+                host_id,
+            </if>
+            <if test="a1 != null">
+                a1,
+            </if>
+            <if test="a2 != null">
+                a2,
+            </if>
+            <if test="a3 != null">
+                a3,
+            </if>
+            <if test="a4 != null">
+                a4,
+            </if>
+            <if test="a5 != null">
+                a5,
+            </if>
+            <if test="a6 != null">
+                a6,
+            </if>
+            <if test="a7 != null">
+                a7,
+            </if>
+            <if test="a8 != null">
+                a8,
+            </if>
+            <if test="a9 != null">
+                a9,
+            </if>
+            <if test="a10 != null">
+                a10,
+            </if>
+            <if test="a11 != null">
+                a11,
+            </if>
+            <if test="a12 != null">
+                a12,
+            </if>
+            <if test="a13 != null">
+                a13,
+            </if>
+            <if test="a14 != null">
+                a14,
+            </if>
+            <if test="a15 != null">
+                a15,
+            </if>
+            <if test="a16 != null">
+                a16,
+            </if>
+            <if test="historyDate != null">
+                history_date,
+            </if>
+        </trim>
+        <trim prefix=" values(" suffix=")" suffixOverrides=",">
+            <if test="hostId != null">
+                #{hostId,jdbcType=VARCHAR},
+            </if>
+            <if test="a1 != null">
+                #{a1,jdbcType=DOUBLE},
+            </if>
+            <if test="a2 != null">
+                #{a2,jdbcType=DOUBLE},
+            </if>
+            <if test="a3 != null">
+                #{a3,jdbcType=DOUBLE},
+            </if>
+            <if test="a4 != null">
+                #{a4,jdbcType=DOUBLE},
+            </if>
+            <if test="a5 != null">
+                #{a5,jdbcType=DOUBLE},
+            </if>
+            <if test="a6 != null">
+                #{a6,jdbcType=DOUBLE},
+            </if>
+            <if test="a7 != null">
+                #{a7,jdbcType=DOUBLE},
+            </if>
+            <if test="a8 != null">
+                #{a8,jdbcType=DOUBLE},
+            </if>
+            <if test="a9 != null">
+                #{a9,jdbcType=DOUBLE},
+            </if>
+            <if test="a10 != null">
+                #{a10,jdbcType=DOUBLE},
+            </if>
+            <if test="a11 != null">
+                #{a11,jdbcType=DOUBLE},
+            </if>
+            <if test="a12 != null">
+                #{a12,jdbcType=DOUBLE},
+            </if>
+            <if test="a13 != null">
+                #{a13,jdbcType=DOUBLE},
+            </if>
+            <if test="a14 != null">
+                #{a14,jdbcType=DOUBLE},
+            </if>
+            <if test="a15 != null">
+                #{a15,jdbcType=DOUBLE},
+            </if>
+            <if test="a16 != null">
+                #{a16,jdbcType=DOUBLE},
+            </if>
+            <if test="historyDate != null">
+                #{historyDate,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateSelective" parameterType="com.jy23.entity.History">
+        update Ask_history
+        <set>
+            <if test="hostId != null ">
+                host_id = #{hostId,jdbcType=VARCHAR},
+            </if>
+            <if test="a1 != null ">
+                a1 = #{a1,jdbcType=DOUBLE},
+            </if>
+            <if test="a2 != null ">
+                a2 = #{a2,jdbcType=DOUBLE},
+            </if>
+            <if test="a3 != null ">
+                a3 = #{a3,jdbcType=DOUBLE},
+            </if>
+            <if test="a4 != null ">
+                a4 = #{a4,jdbcType=DOUBLE},
+            </if>
+            <if test="a5 != null ">
+                a5 = #{a5,jdbcType=DOUBLE},
+            </if>
+            <if test="a6 != null ">
+                a6 = #{a6,jdbcType=DOUBLE},
+            </if>
+            <if test="a7 != null ">
+                a7 = #{a7,jdbcType=DOUBLE},
+            </if>
+            <if test="a8 != null ">
+                a8 = #{a8,jdbcType=DOUBLE},
+            </if>
+            <if test="a9 != null ">
+                a9 = #{a9,jdbcType=DOUBLE},
+            </if>
+            <if test="a10 != null ">
+                a10 = #{a10,jdbcType=DOUBLE},
+            </if>
+            <if test="a11 != null ">
+                a11 = #{a11,jdbcType=DOUBLE},
+            </if>
+            <if test="a12 != null ">
+                a12 = #{a12,jdbcType=DOUBLE},
+            </if>
+            <if test="a13 != null ">
+                a13 = #{a13,jdbcType=DOUBLE},
+            </if>
+            <if test="a14 != null ">
+                a14 = #{a14,jdbcType=DOUBLE},
+            </if>
+            <if test="a15 != null ">
+                a15 = #{a15,jdbcType=DOUBLE},
+            </if>
+            <if test="a16 != null ">
+                a16 = #{a16,jdbcType=DOUBLE},
+            </if>
+            <if test="historyDate != null ">
+                history_date = #{historyDate,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where host_addr = #{hostId,jdbcType=INTEGER}
+    </update>
+
+    <select id="findHistorySelective" parameterType="com.jy23.entity.History" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from Ask_history
+        <where>
+        </where>
+    </select>
+
+    <select id="findHistoryCharApp" resultType="com.jy23.entity.HistoryDataApp">
+		SELECT ${columName} as numValue , history_date as historyDate
+		FROM Ask_history_${tableName}
+		WHERE
+		host_id = #{hostId} and history_date BETWEEN #{startTime} AND #{endTime}
+	</select>
+
+    <select id="findHistoryCharWeb" resultType="com.jy23.entity.HistoryDataWeb">
+		SELECT ${columName} as numValue , history_date as historyDate
+		FROM Ask_history_${tableName}
+		WHERE
+		host_id = #{hostId} and history_date BETWEEN #{startTime} AND #{endTime}
+
+	</select>
+
+    <select id="toHistoryProbeAlarm" resultType="com.jy23.entity.HistoryDataWeb">
+        SELECT ${columName} as numValue , history_date as historyDate
+        FROM Ask_history_${tableName}
+        WHERE
+        host_id = #{hostId}
+        and ${columName} <![CDATA[ >= ]]> #{lowVal}
+        and history_date BETWEEN #{startTime} AND #{endTime}
+    </select>
+    
+    <select id="findByMonth" resultType="com.jy23.entity.AskAlarmRecords">
+        SELECT ${columName} as alarmValue , history_date as alarmTime
+		FROM Ask_history_${tableName}
+		<where>
+            host_id = #{hostId}
+        </where>
+        order by history_date desc
+    </select>
+	
+	<insert id="insertHistory">
+        INSERT INTO Ask_history (host_id,host_address) 
+        values 
+        ((select host_id from ask_host where id = #{hostId,jdbcType=INTEGER}), #{hostAddress,jdbcType=VARCHAR})
+    </insert>
+    
+	<update id="updateHistory">
+        UPDATE Ask_history SET host_address = #{hostAddress,jdbcType=VARCHAR}
+        WHERE host_id = #{hostId,jdbcType=INTEGER}
+    </update>
+    
+	<delete id="deleteHistory">
+        DELETE FROM Ask_history
+        WHERE host_id = #{hostId,jdbcType=INTEGER}
+    </delete>
+    
+</mapper>

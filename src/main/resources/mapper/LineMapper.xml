@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy23.mapper.LineChartMapper">
+
+	<resultMap id="BaseResultMap" type="com.jy23.entity.Probe">
+		<result property="probeBh" column="Probe_Bh" jdbcType="INTEGER" />
+		<result property="probeName" column="Probe_Name" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="findLineChart" resultType="com.jy23.entity.LineChart">
+		select DATEPART(hour,history_date) as h,
+			max(A1) as A1,
+			max(A2) as A2,
+			max(A3) as A3,
+			max(A4) as A4,
+			max(A5) as A5,
+			max(A6) as A6,
+			max(A7) as A7,
+			max(A8) as A8,
+			max(A9) as A9,
+			max(A10) as A10,
+			max(A11) as A11,
+			max(A12) as A12,
+			max(A13) as A13,
+			max(A14) as A14,
+			max(A15) as A15,
+			max(A16) as A16
+		from Ask_history_${tableName} 
+		where 
+		host_id=#{hostId} and DAY(history_date)=#{sDay} 
+		group by DATEPART(hour,history_date)
+		order by DATEPART(hour,history_date)
+    </select>
+    
+	<select id="findProbeName" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select Probe_bh,Probe_Name 
+		from Ask_probe
+		where
+		Host_id=#{hostId}
+	</select>
+    
+</mapper>

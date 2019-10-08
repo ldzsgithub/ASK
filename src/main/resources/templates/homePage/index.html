@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="/lib/jquery/1.9.1/jquery.min.js"></script>
+    <script src="http://api.map.baidu.com/api?v=3.0&ak=iOMediwmdCy9WrORl8ZDD0K5td86xjMr"></script>
+    <script src="/lib/echarts/3.4.0/echarts.common.min.js"></script>
+    <script src="/lib/layer/2.4/layer.js"></script>
+</head>
+<style>
+    .box1{
+        width: 25%;
+        height: 50%;
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        float: left;
+    }
+    .box2{
+        width: 25%;
+        height: 50%;
+        position: absolute;
+        left: 0px;
+        top: 50%;
+        float: left;
+    }
+    .box3{
+        width: 50%;
+        height: 60%;
+        position: absolute;
+        left: 25%;
+        top: 10%;
+        float: left;
+        background: lightgrey;
+    }
+    .box4{
+        width: 25%;
+        height: 50%;
+        position: absolute;
+        left: 75%;
+        top: 0px;
+        float: left;
+        background: lightgrey;
+    }
+    .box5{
+        width: 25%;
+        height: 50%;
+        position: absolute;
+        left: 75%;
+        top: 50%;
+        float: left;
+        background: lightgrey;
+    }
+    .box6{
+        width: 35%;
+        height: 10%;
+        position: absolute;
+        left: 25%;
+        top: 0%;
+        float: left;
+        background: lightgrey;
+    }
+    .box61{
+        width: 15%;
+        height: 10%;
+        position: absolute;
+        left: 60%;
+        top: 0%;
+        float: left;
+        background: lightgrey;
+    }
+    .box7{
+        width: 50%;
+        height: 30%;
+        position: absolute;
+        left: 25%;
+        top: 70%;
+        float: left;
+        background: lightgrey;
+    }
+</style>
+<body>
+    <div class="box1" id="p1">加载中...</div>
+    <div class="box2" id="p2">加载中...</div>
+    <div class="box3" id="p3">加载中...</div>
+    <div class="box4" id="p4">加载中...</div>
+    <div class="box5" id="p5">加载中...</div>
+    <div class="box6" id="p6" style="font-size:60px;font-family:'黑体';color:red"><b><marquee>赤峰远联钢铁有限责任公司煤气联网系统</marquee></b></div>
+    <div class="box61" id="p61" style="font-size:33px;font-family:'黑体';color:red">加载中...</div>
+    <div class="box7" id="p7">加载中...</div>
+</body>
+
+<script>
+	setInterval(function(){p61.innerHTML="<center><b>"+new Date().toLocaleString()+'&#10;星期'+'日一二三四五六'.charAt(new Date().getDay())+"</b></center>";},1000);
+	$("#p1").load("/homePage/p1");
+	$("#p2").load("/homePage/p2");
+	$("#p3").load("/homePage/p3");
+	$("#p4").load("/homePage/p4");
+	$("#p5").load("/homePage/p5");
+	$("#p7").load("/homePage/p7");
+</script>
+</html>

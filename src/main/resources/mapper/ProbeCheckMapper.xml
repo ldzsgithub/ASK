@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy23.mapper.ProbeCheckMapper">
+	<resultMap id="BaseResultMap" type="com.jy23.entity.ProbeCheck">
+		<id property="id" column="id" jdbcType="INTEGER" />
+		<result property="probeId" column="Probe_Id" jdbcType="INTEGER" />
+		<result property="creatdate" column="Creat_Date" jdbcType="DATE"/>
+		<result property="checkdate" column="Check_Date" jdbcType="DATE"/>
+	</resultMap>
+
+	<sql id="Base_Column_List" >
+		id, probe_id, creat_date, check_date
+	</sql>
+	
+	<select id="findAllProbeCheck" resultType="com.jy23.entity.ProbeCheck">
+		select
+		ASK_Probe_Check.probe_id as probeId,creat_date as creatDate,check_date as checkDate,Probe_Name as probeName,
+		Probe_Position as probePosition,Probe_manager as probeManager
+		from Ask_Probe_Check,Ask_Probe
+		<where>
+			Ask_Probe_Check.probe_id=Ask_Probe.probe_id
+			
+			<if test="departmentId!=null">
+				and ASK_Probe_Check.probe_id in 
+				(select Ask_Probe.probe_id from Ask_Probe where Ask_Probe.host_id in 
+				(select ask_host.host_id from ask_host where ask_host.Department_id = #{departmentId})) 
+			</if>
+			<if test="hostId!=null">
+				and Ask_Probe.host_id=#{hostId}
+			</if>
+			<if test="probeName!=null">
+				and Ask_Probe.probe_name like '%'+#{probeName}+'%'
+			</if>
+		</where>
+		order by check_date
+	</select>
+	
+	<insert id="insertProbeCheck" parameterType="com.jy23.entity.ProbeCheck"  useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO Ask_Probe_Check
+		<trim prefix=" (" suffix=")" suffixOverrides=",">
+			<if test="probeId != null">
+				probe_id,
+			</if>
+			<if test="creatDate != null">
+				creat_date,
+			</if>
+			<if test="checkDate != null">
+				check_date,
+			</if>
+		</trim>
+		<trim prefix=" values(" suffix=")" suffixOverrides=",">
+			<if test="probeId != null">
+				#{probeId},
+			</if>
+			<if test="creatDate != null">
+				#{creatDate},
+			</if>
+			<if test="checkDate != null">
+				#{checkDate},
+			</if>
+		</trim>
+	</insert>
+
+	<update id="updateProbeCheck" parameterType="com.jy23.entity.ProbeCheck">
+		update Ask_Probe_Check
+		<set>
+			<if test="creatDate != null ">
+				creat_date = #{creatDate},
+			</if>
+			<if test="checkDate != null ">
+				check_date = #{checkDate},
+			</if>
+		</set>
+		where probe_id = #{probeId}
+	</update>
+
+	<delete id="deleteByHostId" parameterType="java.lang.Integer" >
+		delete from Ask_Probe_Check 
+		where probe_id = #{probeId}
+	</delete>
+
+</mapper>

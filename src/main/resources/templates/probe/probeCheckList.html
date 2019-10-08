@@ -1,0 +1,100 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<header>
+    <head th:include="common/_header.html::commonHeader('气体探头管理')"/>
+</header>
+<body>
+<article class="page-container">
+    <form id="sForm" name="sForm">
+        <div class="text-l ">
+            主机名称:
+            <select name="hostId" class="input-text" style="width:250px">
+                <option value="-1">全部</option>
+                <option th:each="h:${hosts}" th:value="${h.hostId}" th:text="${h.hostName}" th:selected="${h.hostId==hostId}"></option>
+            </select>
+            探头名称: <input type="text" class="input-text" style="width:250px" name='probeName' id='probeNameId' th:value="${probeName}">
+            &nbsp;&nbsp;
+            <button type="button" onclick="queryDate()" class="btn btn-success radius"><i class="Hui-iconfont">&#xe665;</i>搜索</button>
+        </div>
+        <div class="mt-20">
+            <table class="table table-border table-bordered table-bg">
+                <thead>
+                <tr class="text-c ">
+                    <th width="50">序号</th>
+                    <th width="200">监测点名称</th>
+                    <th width="200">监测点位置</th>
+                    <th width="80">更新时间</th>
+                    <th width="80">校验时间</th>
+                    <th width="80">负责人</th>
+                    <th width="80">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="text-c" th:each="list,iterStat:${probeCheck}">
+                    <td th:text="${iterStat.index+1}"></td>
+                    <td th:text="${list.probeName}"></td>
+                    <td th:text="${list.probePosition}"></td>
+                    <td th:text="${#dates.format(list.creatDate, 'yyyy-MM-dd')}"></td>
+                    <td th:text="${#dates.format(list.checkDate, 'yyyy-MM-dd')}"
+                    th:style="${new java.util.Date().getTime()-list.checkDate.getTime()>-15*86400000?'color:#F00;':
+                    	(new java.util.Date().getTime()-list.checkDate.getTime()>-30*86400000?'color:#FFD700;':'color:#000;')}"></td>
+                    <td>
+                    	<a class="badge badge-secondary radius" th:text="${list.user==null?null:list.user.name}" 
+                    		th:onclick="userInfo([[${list.user==null?null:list.user.id}]])"></a>
+                    </td>
+                    <td class="text-c">
+                        <a class="label label-success radius" th:onclick="'pageJump('+(${list.probeId})+')'">更新</a>  
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <input type="hidden" th:value="${authority}" id="authority" name="authority">
+        </div>
+    </form>
+</article>
+</body>
+
+<script>
+	if($("#authority").val()==null||$("#authority").val()=="") {
+		if(parent.$("#authority").val()!=null&&parent.$("#authority").val()!="") {
+			$("#authority").val(parent.$("#authority").val());
+			queryDate();
+		} else {
+			layer.msg("当前用户没有权限");
+		}
+	}
+	
+    function queryDate() {
+        document.sForm.action = "/probeCheck/toProbeCheckList";
+        document.sForm.submit();
+    }
+
+    function pageJump(id) {
+        layer.open({
+			type: 2,
+			area: ['250px', '250px'],
+			fixed: false, //不固定
+			maxmin: true,
+			anim: 3,
+			content: '/probeCheck/toUpdateProbeCheck?probeId='+id
+		});
+    }
+	
+    function userInfo(id){
+		layer.open({
+			type : 2,
+			area : [ '400px', '300px' ],
+			fixed : false,
+			maxmin : true,
+			anim : 3,
+			title : '用户信息',
+			content : '/users/userInfo?id=' + id
+		});
+	}
+    
+    function refreshPage() {
+        layer.closeAll();
+        window.location.href = "/probeCheck/toProbeCheckList";
+    }
+</script>
+</html>

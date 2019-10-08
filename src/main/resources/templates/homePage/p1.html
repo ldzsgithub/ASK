@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+    <script src="/lib/echarts/3.4.0/echarts.common.min.js"></script>
+</body>
+<script>
+var myChart1 = echarts.init(document.getElementById('p1'));
+myChart1.setOption({
+	backgroundColor: "lightgrey",
+    title : {
+        text: '探头数量',
+        x:'center'
+    },
+    tooltip : {
+        trigger: 'item',
+        formatter: "{a} <br/>{b} : {c} ({d}%)"
+    },
+    legend: {
+        orient: 'vertical',
+        left: 'left',
+        fontStyle: 'bolder',
+        data: ['一氧化碳','可燃气','氧气']
+    },
+    textStyle: {
+    	fontStyle: 'bolder',
+    	fontSize: 18
+    },
+    series : [
+        {	
+        	fontStyle: 'bolder',
+            name: '探头类型',
+            type: 'pie',
+            radius : '70%',
+            center: ['55%', '60%'],
+            data:[{value:0, name:'氧气'},
+	            {value:0, name:'可燃气'},
+	            {value:0, name:'一氧化碳'}],
+            itemStyle: {
+                emphasis: {
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            }
+        }
+    ]
+});
+
+	$.ajax({
+	    type : "post",
+	    async : true,
+	    url : "pp1",
+	    dataType : "json",
+	    success : function(result) {
+	        if (result) {
+	        	myChart1.setOption({
+	        		series:[{
+	        			data:[
+	        	            {value:result.body[0], name:'氧气'},
+	        	            {value:result.body[1], name:'可燃气'},
+	        	            {value:result.body[2], name:'一氧化碳'}
+	        	        ]
+	        		}]
+	        	});
+	        }
+	    },
+	    erro : function (){
+	    	alert("饼图数据加载失败");
+	    }
+	})
+</script>
+</html>

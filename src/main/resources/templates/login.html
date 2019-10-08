@@ -1,0 +1,68 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<header>
+	<link rel="stylesheet" th:href="@{/css/h-ui.admin/css/H-ui.login.css}" />
+	<head th:include="common/_header.html::commonHeader('赛克云管理台')" />
+</header>
+
+<body>
+	<input type="hidden" id="TenantId" name="TenantId" value="" />
+	<div class="header">
+		<span style="font-size: 33px; padding: 5px; margin-left: 10px; color: #A1C1D6">赤峰远联钢铁有限责任公司煤气联网系统</span>
+	</div>
+	<div class="loginWraper">
+		<div id="loginform" class="loginBox">
+			<form class="form form-horizontal" action="index.html" method="post" id="sForm" name="sForm">
+				<div class="row cl">
+					<label class="form-label col-xs-3"><i class="Hui-iconfont">&#xe60d;</i></label>
+					<div class="formControls col-xs-8">
+						<input id="nameId" name="nameId" type="text" placeholder="账户" class="input-text size-L">
+					</div>
+				</div>
+				<div class="row cl">
+					<label class="form-label col-xs-3"><i class="Hui-iconfont">&#xe60e;</i></label>
+					<div class="formControls col-xs-8">
+						<input id="passwordId" name="password" type="password" placeholder="密码" class="input-text size-L">
+					</div>
+				</div>
+				<div class="row cl">
+					<div class="formControls col-xs-8 col-xs-offset-3">
+						<input onclick="btnSubmit()" type="button" class="btn btn-success radius size-L" value="&nbsp;登&nbsp;&nbsp;&nbsp;&nbsp;录&nbsp;">
+						&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<input onclick="btnAddUser()" type="button" class="btn btn-primary radius size-L" value="&nbsp;注&nbsp;&nbsp;&nbsp;&nbsp;册&nbsp;">
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+	<div class="footer">Copyright 北京安赛克科技有限公司</div>
+
+	<script>
+		function btnSubmit() {
+			common_ajax.defaultFunc('/users/loginWeb', {
+				"users" : $("#nameId").val(),
+				"password" : $("#passwordId").val()
+			}, function(response) {
+				document.sForm.action = "/toMain";
+				document.sForm.submit();
+			});
+		}
+
+		function btnAddUser() {
+			var index = layer.open({
+				type : 2,
+				area : [ '450px', '370px' ],
+				fixed : false, //不固定
+				maxmin : true,
+				anim : 3,
+				title : "用户注册",
+				content : '/users/usersRegister'
+			});
+		}
+		
+		function closeLayer(str){
+	        layer.closeAll();
+	        layer.msg(str);
+	    }
+	</script>
+</body>
+</html>

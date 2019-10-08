@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy23.mapper.HostOrderMapper">
+
+	<insert id="insertHostOrder" parameterType="com.jy23.entity.HostOrder"  useGeneratedKeys="true" keyProperty="orderId">
+        INSERT INTO Host_Order
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="hostAddress != null">
+                host_address,
+            </if>
+            <if test="functionCode != null">
+                function_code,
+            </if>
+            <if test="registerHeader != null">
+                register_header,
+            </if>
+            <if test="registerNumber != null">
+                register_number,
+            </if>
+            <if test="registerCard != null">
+                register_card
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="hostAddress != null">
+                #{hostAddress},
+            </if>
+            <if test="functionCode != null">
+                #{functionCode},
+            </if>
+            <if test="registerHeader != null">
+                #{registerHeader},
+            </if>
+            <if test="registerNumber != null">
+                #{registerNumber},
+            </if>
+            <if test="registerCard != null">
+                #{registerCard}
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateHostOrder" parameterType="com.jy23.entity.HostOrder">
+        UPDATE Host_Order
+        <set>
+            <if test="hostAddress != null ">
+                host_address = #{hostAddress},
+            </if>
+            <if test="registerCard != null ">
+                register_card = #{registerCard}
+            </if>
+        </set>
+        where Order_Id = (select Order_Id from ASK_Host where Host_Id=#{hostId,jdbcType=INTEGER})
+    </update>
+    
+    <delete id="deleteHostOrder" parameterType="java.lang.Integer">
+		DELETE FROM Host_Order
+      	WHERE Order_Id = (select Order_Id from ASK_Host where Host_Id=#{hostId,jdbcType=INTEGER})
+	</delete>
+	
+	<update id="addRegisterNumber" parameterType="java.lang.Integer">
+        UPDATE Host_Order
+        SET register_number = register_number + 1
+        where Order_Id = (select Order_Id from ASK_Host where Host_Id=#{hostId,jdbcType=INTEGER})
+    </update>
+    
+    <update id="reduceRegisterNumber" parameterType="java.lang.Integer">
+        UPDATE Host_Order
+        SET register_number = register_number - 1
+        where Order_Id = (select Order_Id from ASK_Host where Host_Id=(select Host_id from ASK_Probe where Probe_id=#{hostId,jdbcType=INTEGER}))
+    </update>
+</mapper>

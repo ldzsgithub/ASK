@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="common/_header.html::commonHeader('实时报警数据')"/>
+<style type="text/css">
+	.box-p7{
+		width: 100%;
+		height: 100%;
+		overflow-y: scroll;
+		overflow-x: hidden;
+	}
+	.box-p7::-webkit-scrollbar {
+		width: 0px;
+	}
+	.box-p7::-webkit-scrollbar-track {
+		background-color:white;
+		-webkit-border-radius: 2em;
+		-moz-border-radius: 2em;
+		border-radius:2em;
+	}
+	.box-p7::-webkit-scrollbar-thumb {
+		background-color:#DCDCDC;
+		-webkit-border-radius: 2em;
+		-moz-border-radius: 2em;
+		border-radius:2em;
+	}
+</style>
+<body>
+<div class="box-p7">
+	<table class="table table-border table-bordered table-bg" style="border:2px solid #000">
+		<thead>
+			<tr class="text-c">
+				<th width="40" style="background-color:#1497e1;color:#000;font-weight:bold;font-size:18px;">序号</th>
+				<th style="background-color:#1497e1;color:#000;font-weight:bold;font-size:18px;">工厂名称</th>
+				<th style="background-color:#1497e1;color:#000;font-weight:bold;font-size:18px;">主机名称</th>
+				<th style="background-color:#1497e1;color:#000;font-weight:bold;font-size:18px;">检测点名称</th>
+				<th width="70" style="background-color:#1497e1;color:#000;font-weight:bold;font-size:18px;">报警值</th>
+				<th width="80" style="background-color:#1497e1;color:#000;font-weight:bold;font-size:18px;">负责人</th>
+				<th width="70" style="background-color:#1497e1;color:#000;font-weight:bold;font-size:18px;">低报值</th>
+				<th width="70" style="background-color:#1497e1;color:#000;font-weight:bold;font-size:18px;">高报值</th>
+            </tr>
+		</thead>
+		<tbody class="text-c">
+        	<tr th:each="list,iterStat:${probes}">
+				<td th:text="${iterStat.count}" style="color:#000;font-weight:bold;font-size:16px;"></td>
+				<td th:text="${list.department_name}" style="color:#000;font-weight:bold;font-size:16px;"></td>
+				<td th:text="${list.host_name}" style="color:#000;font-weight:bold;font-size:16px;"></td>
+				<td th:text="${list.probeName}" style="color:#000;font-weight:bold;font-size:16px;"></td>
+				<td th:text="${list.realtimeValue}" th:style="${list.realtimeValue>24&&list.realtimeValue<=100?'color:#FFD700;font-weight:bold;font-size:16px;':
+                    	(list.realtimeValue>100?'color:#F00;font-weight:bold;font-size:18px;':'color:#000;font-weight:bold;font-size:16px;')}"></td>
+				<td>
+					<a class="badge badge-secondary radius" th:text="${list.users==null?null:list.users.name}" 
+                    	th:onclick="userInfo([[${list.users==null?null:list.users.id}]])"></a>
+				</td>
+                <td th:text="${list.lowValue}" style="color:#000;font-weight:bold;font-size:16px;"></td>
+                <td th:text="${list.highValue}" style="color:#000;font-weight:bold;font-size:16px;"></td>
+            </tr>
+		</tbody>
+	</table>
+</div>
+</body>
+<script>
+function userInfo(id){
+	if(id==null) return;
+	layer.open({
+		type : 2,
+		area : [ '400px', '300px' ],
+		maxmin : true,
+		anim : 3,
+		title : '用户信息',
+		content : '/users/userInfo?id=' + id 
+		  
+	});
+}
+</script>
+</html>

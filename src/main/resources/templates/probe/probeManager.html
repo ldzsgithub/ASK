@@ -1,0 +1,230 @@
+﻿<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<header>
+    <head th:include="common/_header.html::commonHeader('气体探头管理列表')"/>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=iOMediwmdCy9WrORl8ZDD0K5td86xjMr"></script>
+</header>
+<body>
+<article class="page-container">
+    <form id="sForm" name="sForm" class="form form-horizontal">
+        <table class="table">
+            <tr class="text-c ">
+                <td class="text-l" colspan='1'>
+                    <span class="c-red">*</span>主机名称:
+                </td>
+                <td class="text-l" colspan='1'>
+                    <select class="input-text" name="hostId" id="hostIdId" onchange="hostSelectOnChange()">
+                        <option value="-1">全部</option>
+                        <option th:each="h:${hosts}" th:value="${h.hostId}" th:text="${h.hostName}" th:selected="${h.hostId == probe.hostId}"></option>
+                    </select>
+                </td>
+                <td class="text-l" colspan='1'>
+                    <span class="c-red">*</span>编号:
+                </td>
+                <td class="text-l" colspan='1'>
+                    <input type="text" class="input-text" name='probeBh' th:value="${probe.probeBh}" style="width: 100px" readonly id='probeBhId'>
+                    <button type="button" class="size-S btn btn-success radius" onclick="btnGetBh()">获取编号</button>
+                </td>
+            </tr>
+            <tr class="text-c">
+                <td class="text-l" colspan='1'>
+                    <span class="c-red">*</span>名称:
+                </td>
+                <td class="text-r">
+                    <input type="text" class="input-text" name='probeName' th:value="${probe.probeName}" id='probeNameId'>
+                </td>
+                <td class="text-l" colspan='1'>
+                    <span class="c-red">*</span>负责人:
+                </td>
+                <td class="text-l" colspan='1'>
+                    <select class="input-text" name="probeManager" id="probeManager"></select>
+                </td>
+            </tr>
+            <tr class="text-c ">
+                <td class="text-l" colspan='1'>
+                    <span class="c-red">*</span>位置:
+                </td>
+                <td class="text-r" colspan='3'>
+                    <input type="text" class="input-text" name='probePosition' th:value="${probe.probePosition}" id='probePositionId'>
+                </td>
+            </tr>
+            <tr class="text-c ">
+                <td class="text-l" colspan='1'>
+                    <span class="c-red">*</span>备注:
+                </td>
+                <td class="text-r" colspan='3'>
+                    <input type="text" class="input-text" name='probeRemarks' th:value="${probe.probeRemarks}" id='probeRemarksId'>
+                </td>
+            </tr>
+            <tr class="text-c" th:if="${FLAG} =='ADD'">
+                <td class="text-l" colspan='1'>
+                    <span class="c-red">*</span>校验期:
+                </td>
+                <td class="text-r" colspan='3'>
+                    <select class="input-text" name="checkMonth" id="checkMonth">
+                        <option value="12">12个月</option>
+                        <option value="9">9个月</option>
+                        <option value="6">6个月</option>
+                        <option value="3">3个月</option>
+                    </select>
+                </td>
+            </tr>
+            <tr class="text-c ">
+                <td class="text-l" colspan='1'>
+                    <span class="c-red">*</span>设备类型:
+                </td>
+                <td class="text-r" colspan='3'>
+                    <select name="probeType" id="probeType" class="input-text" onchange="probeTypeOnChange()">
+                			<option value="0"  th:selected="${probe.probeType==0}">一氧化碳</option>
+                			<option value="1"  th:selected="${probe.probeType==1}">氧气</option>
+                			<option value="2"  th:selected="${probe.probeType==2}">可燃气</option>
+            		</select>
+                </td>
+            </tr>
+            <tr class="text-c ">
+                <td class="text-l" colspan='1'>
+                    <span class="c-red">*</span>低爆值:
+                </td>
+                <td class="text-r" colspan='1'>
+                    <input type="text" class="input-text" name='lowValue' th:value="${probe.lowValue}" id='lowValueId'>
+                </td>
+                <td class="text-l" colspan='1'>
+                    <span class="c-red">*</span>高爆值:
+                </td>
+                <td class="text-r" colspan='1'>
+                    <input type="text" class="input-text" name='highValue' th:value="${probe.highValue}" id='highValueId'>
+                </td>
+            </tr>
+
+            <tr class="text-c ">
+                <td class="text-l" colspan='1'>
+                    <span class="c-red">*</span>纬度:
+                </td>
+                <td class="text-r" colspan='1'>
+                    <input type="text" class="input-text" name='lat' th:value="${probe.customLat}" id='latId'>
+                </td>
+                <td class="text-l" colspan='1'>
+                    <span class="c-red">*</span>经度:
+                </td>
+                <td class="text-r" colspan='1'>
+                    <input type="text" class="input-text" name='lng' th:value="${probe.customLng}" id='lngId'>
+                </td>
+            </tr>
+
+
+            <tr class="text-c ">
+                <td colspan='4'>
+                    <button type="button" class="btn btn-success radius" onclick="btnToMap()"> 获取经纬度</button>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button type="button" class="btn btn-primary radius" onclick="save()" th:if="${FLAG} =='ADD'">保存</button>
+                    <button type="button" class="btn btn-primary radius" onclick="update()" th:if="${FLAG} =='UPDATE'">修改</button>
+                </td>
+            </tr>
+        </table>
+            <input type="hidden" name='probeId' th:value="${probe.probeId}">
+            <input type="hidden" id='FLAG' th:value="${FLAG}">
+            <input type="hidden" id='pm' th:value="${probe.probeManager}">
+    </form>
+</article>
+</body>
+
+
+<script>
+    function btnToMap() {
+        var index = layer.open({
+            type: 2,
+            area: ['70%', '80%'],
+            fixed: false, //不固定
+            maxmin: true,
+            anim: 3,
+            title: "请选择坐标",
+            content: '/map/toBdMap'
+        });
+    }
+
+    function setLatLng(lat, lng) {
+        $("#latId").val(lat);
+        $("#lngId").val(lng);
+        layer.close(layer.index);
+    }
+
+    function btnGetBh() {
+        if ($('#hostIdId').val() == "-1") {
+            layer.msg("请选择主机")
+            return;
+        }
+        common_ajax.defaultFunc(
+            '/probe/selectCanUseBH',
+            {"hostId": $('#hostIdId').val()},
+            function (response) {
+                if (response.body == null || response.body == undefined || response.body.length == 0) {
+                    layer.alert("当前主机下没有可用编号,不允许进行添加！");
+                } else {
+                    $("#probeBhId").val(response.body);
+                }
+            }
+        );
+    }
+    hostSelectOnChange();
+    function hostSelectOnChange() {
+      	if($("#FLAG").val()=="ADD"){
+      		$("#probeBhId").val('');
+      	}
+      	if ($('#hostIdId').val() == "-1") {
+      		$('#probeManager').empty();
+            return;
+        }
+      	common_ajax.defaultFunc("/userQx/selectUser", 
+      		{"hostId": $('#hostIdId').val()}, 
+      		function (response) {
+            	$('#probeManager').empty();
+            	if (response.body.length == 0) {
+                	layer.msg("当前主机暂无负责人");
+                	return;
+            	}
+            	//$('#probeManager').append("<option value=\"-1\">全部</option>");
+            	for (var i = 0; i < response.body.length; i++) {
+                	$('#probeManager').append("<option value=\"" + response.body[i].id + "\">" + response.body[i].name + "</option>");
+            	}
+        })
+        $("#probeManager").val($("#pm").val());
+    }
+    
+    if($('#lowValueId').val()==''||$('#highValueId').val()==''){
+    	probeTypeOnChange();
+    }
+    
+    function probeTypeOnChange(){
+    	if($('#probeType').val()==0){
+    		$('#lowValueId').val(24);
+    		$('#highValueId').val(100);
+    	} else if($('#probeType').val()==1){
+    		$('#lowValueId').val(18);
+    		$('#highValueId').val(23);
+    	} else if($('#probeType').val()==2){
+    		$('#lowValueId').val(25);
+    		$('#highValueId').val(50);
+    	}
+    }
+    
+    function update() {
+        common_ajax.defaultFunc(
+            '/probe/update',
+            $("#sForm").serialize(),
+            function (response) {
+                window.parent.refreshPage();
+            }
+        );
+    }
+
+    function save() {
+        common_ajax.defaultFunc(
+            '/probe/save',
+            $("#sForm").serialize(),
+            function (response) {
+                window.parent.refreshPage();
+            }
+        );
+    }
+</script>
+</html>

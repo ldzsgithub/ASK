@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy23.mapper.TroubleMapper">
+	<resultMap id="BaseResultMap" type="com.jy23.entity.Trouble">
+		<id property="id" column="id" jdbcType="INTEGER"/>
+		<result property="troubleTitle" column="trouble_title" jdbcType="VARCHAR"/>
+		<result property="troubleContent" column="trouble_content" jdbcType="VARCHAR"/>
+		<result property="major" column="major" jdbcType="VARCHAR"/>
+		<result property="creatTime" column="creat_time" jdbcType="TIMESTAMP"/>
+		<result property="solveTime" column="solve_time" jdbcType="TIMESTAMP"/>
+		<result property="termTime" column="term_time" jdbcType="TIMESTAMP"/>
+		<result property="status" column="status" jdbcType="INTEGER"/>
+		<result property="troubleLevel" column="trouble_level" jdbcType="INTEGER"/>
+		<result property="submitter" column="submitter" jdbcType="VARCHAR"/>
+		<result property="troubleProcess" column="trouble_process" jdbcType="VARCHAR"/>
+	</resultMap>
+	<sql id="Base_Column_List">
+		id,trouble_title,trouble_content,major,creat_time,solve_time,term_time,status,trouble_level,submitter,trouble_process
+	</sql>
+	
+	<select id="findAllTrouble" parameterType="com.jy23.entity.Trouble" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"/>
+		from Ask_Trouble
+		<where>
+			<if test="status != null">
+			status=#{status}
+			</if>
+			<if test="major != null">
+			and major=#{major}
+			</if>
+			<if test="submitter != null">
+			and submitter=#{submitter}
+			</if>
+			<if test="troubleTitle != null">
+			and (trouble_title like ('%'+#{troubleTitle}+'%') 
+				or major in (select id from Ask_user where name like '%'+#{troubleTitle}+'%')
+				or submitter in (select id from Ask_user where name like '%'+#{troubleTitle}+'%')
+				)
+			</if>
+		</where>
+			<if test="status == 0">
+			order by term_time
+			</if>
+			<if test="status == -1">
+			order by solve_time desc
+			</if>
+			,trouble_level desc
+	</select>
+	
+	<select id="findTroubleById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List"/>
+		from Ask_Trouble
+		<where>
+			id=#{id,jdbcType=INTEGER}
+		</where>
+	</select>
+	
+	<insert id="insertTrouble" parameterType="com.jy23.entity.Trouble"  useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO Ask_Trouble
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="troubleTitle != null">
+                trouble_title,
+            </if>
+            <if test="troubleContent != null">
+                trouble_content,
+            </if>
+            <if test="major != null">
+                major,
+            </if>
+            <if test="creatTime != null">
+                creat_time,
+            </if>
+            <if test="solveTime != null">
+                solve_time,
+            </if>
+            <if test="termTime != null">
+                term_time,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="troubleLevel != null">
+                trouble_level,
+            </if>
+            <if test="submitter != null">
+                submitter,
+            </if>
+        </trim>
+        <trim prefix="values(" suffix=")" suffixOverrides=",">
+            <if test="troubleTitle != null">
+                #{troubleTitle},
+            </if>
+            <if test="troubleContent != null">
+                #{troubleContent},
+            </if>
+            <if test="major != null">
+                #{major},
+            </if>
+            <if test="creatTime != null">
+                #{creatTime},
+            </if>
+            <if test="solveTime != null">
+                #{solveTime},
+            </if>
+            <if test="termTime != null">
+                #{termTime},
+            </if>
+            <if test="status != null">
+                #{status},
+            </if>
+            <if test="troubleLevel != null">
+                #{troubleLevel},
+            </if>
+            <if test="submitter != null">
+                #{submitter},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateTrouble" parameterType="com.jy23.entity.Trouble">
+       update Ask_trouble
+       <set>
+       		<if test="troubleTitle != null ">
+                trouble_title = #{troubleTitle},
+            </if>
+            <if test="troubleContent != null ">
+                trouble_content = #{troubleContent},
+            </if>
+            <if test="troubleLevel != null ">
+                trouble_level = #{troubleLevel},
+            </if>
+            <if test="major != null ">
+                major = #{major},
+            </if>
+            <if test="termTime != null ">
+                term_time = #{termTime},
+            </if>
+            <if test="solveTime != null ">
+                solve_time = #{solveTime},
+            </if>
+            <if test="troubleProcess != null ">
+                trouble_process = #{troubleProcess},
+            </if>
+            <if test="status != null ">
+                status = #{status},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+	
+	<select id="counta" resultType="java.lang.Integer">
+		select
+		count(*)
+		from Ask_Trouble
+		<where>
+			<if test="id != null">
+               	and major=#{id}
+            </if>
+			<if test="sTime != null">
+               	and creat_time <![CDATA[ < ]]> #{sTime}
+               	and (solve_time <![CDATA[ > ]]> #{nTime}
+               	 	or solve_time is null)
+               	
+            </if>
+		</where>
+	</select>
+	
+	<select id="countb" resultType="java.lang.Integer">
+		select
+		count(*)
+		from Ask_Trouble
+		<where>
+				status <![CDATA[ = ]]> 0
+			<if test="id != null">
+               	and major=#{id}
+            </if>
+			<if test="sTime != null">
+               	and creat_time <![CDATA[ < ]]> #{sTime}
+               	and solve_time <![CDATA[ > ]]> #{sTime}
+               	and solve_time <![CDATA[ < ]]> #{nTime}
+            </if>
+		</where>
+	</select>
+	
+	<select id="countc" resultType="java.lang.Integer">
+		select
+		count(*)
+		from Ask_Trouble
+		<where>
+				status <![CDATA[ > ]]> 0
+			<if test="id != null">
+               	and major=#{id}
+            </if>
+			<if test="sTime != null">
+               	and creat_time <![CDATA[ < ]]> #{sTime}
+               	and solve_time <![CDATA[ > ]]> #{sTime}
+               	and solve_time <![CDATA[ < ]]> #{nTime}
+            </if>
+		</where>
+	</select>
+	
+	<select id="countd" resultType="java.lang.Integer">
+		select
+		count(*)
+		from Ask_Trouble
+		<where>
+				status <![CDATA[ = ]]> 0
+			<if test="id != null">
+               	and major=#{id}
+            </if>
+			<if test="sTime != null">
+               	and creat_time <![CDATA[ > ]]> #{sTime}
+               	and solve_time <![CDATA[ < ]]> #{nTime}
+            </if>
+		</where>
+	</select>
+	
+	<select id="counte" resultType="java.lang.Integer">
+		select
+		count(*)
+		from Ask_Trouble
+		<where>
+			<if test="id != null">
+               	and major=#{id}
+            </if>
+			<if test="sTime != null">
+               	and creat_time <![CDATA[ > ]]> #{sTime}
+               	and creat_time <![CDATA[ < ]]> #{nTime}
+               	and (solve_time <![CDATA[ > ]]> #{nTime}
+               		or solve_time is null)
+            </if>
+		</where>
+	</select>
+	
+	<select id="countf" resultType="java.lang.Integer">
+		select
+		count(*)
+		from Ask_Trouble
+		<where>
+			status <![CDATA[ > ]]> 0
+			<if test="id != null">
+               	and major=#{id}
+            </if>
+			<if test="sTime != null">
+               	and creat_time <![CDATA[ > ]]> #{sTime}
+               	and solve_time <![CDATA[ < ]]> #{nTime}
+            </if>
+		</where>
+	</select>
+</mapper>

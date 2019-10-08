@@ -1,0 +1,68 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<header>
+	<head th:include="common/_header.html::commonHeader('权限管理-修改权限')" />
+</header>
+<body>
+	<article class="page-container">
+		<form id="sForm" name="sForm" method="post" class="form form-horizontal">
+			<table class="table">
+			<tr class="text-c">
+				<td class="text-l">用&ensp;户&ensp;名:</td>
+				<td class="text-r" colspan='1'><input type="text" class="input-text" readonly th:value="${users.name}" id='users'>
+			</tr>
+			<tr class="text-c">
+				<td class="text-l">权&emsp;&emsp;限:</td>
+				<td class="text-r" colspan='1'>
+					<select class="input-text" id='sel' name='sel' onchange="selectChange(this)">
+						<option value="1">超级管理员</option>
+						<option value="2">管理员</option>
+						<option value="3">普通用户</option>
+					</select>
+				</td>
+			</tr>
+			<tr id='tr1' class="text-c" style="display:none">
+				<td class="text-l">部&emsp;&emsp;门:</td>
+				<td class="text-r" colspan='1' th:each="h:${department}" id='che'>
+				<input type="checkbox" name="ches" th:value="${h.departmentId}" th:text="${h.departmentName}"/>
+				</td>
+			</tr>
+			</table>
+			<div align="center">
+				<input class="btn btn-primary radius" type="button" onclick="update()" value="修改">
+			</div>
+			<input type="hidden" th:value="${users.loginflag}" id='loginflag'>
+			<input type="hidden" th:value="${users.authority}" id='authority' name='authority'>
+			<input type="hidden" th:value="${id}" id='id' name='id'>
+		</form>
+	</article>
+</body>
+<script>
+$(function(){
+	var r=$("#loginflag").val();
+	$("#sel").val($("#loginflag").val());
+	if(r==3||r==2){
+		document.getElementById("tr1").style.display='block';
+		//回显部门权限
+	} else {
+		document.getElementById("tr1").style.display='none'
+	}
+})
+function selectChange(obj){
+	if(obj.value==3||obj.value==2){
+		document.getElementById("tr1").style.display='block';
+	} else {
+		document.getElementById("tr1").style.display='none'
+	}
+}
+function update() {
+	var authority="";
+	$("input[type='checkbox']:checked").each(function(index, item) {
+		authority+=$(this).val()+",";
+	});
+	$("#authority").val(authority);
+	document.sForm.action = "/userQx/update";
+	document.sForm.submit();
+}
+</script>
+</html>

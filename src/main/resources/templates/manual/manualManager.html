@@ -1,0 +1,140 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<header>
+    <head th:include="common/_header.html::commonHeader('����̽ͷ����')"/>
+</header>
+<body>
+<article class="page-container">
+    <form id="sForm" name="sForm" class="form form-horizontal">
+        <table class="table">
+            <tr class="text-c ">
+                <td class="text-l" colspan='1'>
+                    <span class="c-red">*</span>主机名称:
+                </td>
+                <td class="text-l" colspan='1'>
+                    <select name="hostId" id="hostIdId" onchange="hostSelectOnChange()">
+                        <option value="-1">---</option>
+                        <option th:each="h:${hosts}" th:value="${h.hostId}" th:text="${h.hostName}" th:selected="${h.hostId == manual?.hostId}"></option>
+                    </select>
+                </td>
+
+                <td class="text-l" colspan='1'>
+                    <span class="c-red">*</span>编号:
+                </td>
+                <td class="text-l" colspan='1'>
+                    <input type="text" class="input-text" name='probeBh' th:value="${manual?.probeBh}"
+                           style="width: 100px" readonly id='probeBhId'>
+                    <button type="button" class="size-S btn btn-success radius"
+                            onclick="btnGetBh()">获取编号
+                    </button>
+                </td>
+            </tr>
+            <tr class="text-c">
+                <td class="text-l" colspan='1'>
+                    <span class="c-red">*</span>名称:
+                </td>
+                <td class="text-r">
+                    <input type="text" class="input-text" name='probeName' th:value="${manual?.probeName}"
+                           id='probeNameId'>
+                </td>
+            </tr>
+            <tr class="text-c ">
+                <td class="text-l" colspan='1'>
+                    <span class="c-red">*</span>位置:
+                </td>
+                <td class="text-r" colspan='3'>
+                    <input type="text" class="input-text" name='probePosition' th:value="${manual?.probePosition}"
+                           id='probePositionId'>
+                </td>
+            </tr>
+            <tr class="text-c ">
+                <td class="text-l" colspan='1'>
+                    <span class="c-red">*</span>备注:
+                </td>
+                <td class="text-r" colspan='3'>
+                    <input type="text" class="input-text" name='probeRemarks' th:value="${manual?.probeRemarks}"
+                           id='probeRemarksId'>
+                </td>
+            </tr>
+            <tr class="text-c ">
+					<td colspan="1" class="text-l"><span class="c-red">*</span>状态：</td>
+					<td class="text-l">
+						<div class="">
+							<div class="radio-box">
+								<input type="radio" id="realtimeValue-1" name="realtimeValue" th:value="-1" th:checked="${manual?.realtimeValue==-1}"> <label>初始化</label>
+							</div>
+							<div class="radio-box">
+								<input type="radio" id="realtimeValue0" name="realtimeValue" th:value="0" th:checked="${manual?.realtimeValue== 0}"> <label>熄灭</label>
+							</div>
+							<div class="radio-box">
+								<input type="radio" id="realtimeValue1" name="realtimeValue" th:value="1" th:checked="${manual?.realtimeValue==1}"> <label>点燃</label>
+							</div>
+						</div>
+					</td>
+				</tr>
+
+            <input type="hidden"  name='probeId' th:value="${manual?.probeId}">
+
+            <tr class="text-c ">
+                <td class="text-c" colspan='4' th:if="${FLAG} =='ADD'">
+                    <button type="button" class="btn btn-primary radius" onclick="save()">保存</button>
+                <td class="text-c">
+                <td class="text-c" colspan='4' th:if="${FLAG} =='UPDATE'">
+                    <button type="button" class="btn btn-primary radius" onclick="update()">修改</button>
+                <td class="text-c">
+            </tr>
+        </table>
+
+
+    </form>
+</article>
+</body>
+
+<script>
+    function btnGetBh() {
+        if ($('#hostIdId').val() == "-1") {
+            layer.msg("请选择主机")
+            return;
+        }
+        common_ajax.defaultFunc(
+            '/manual/selectCanUseBH',
+            {"hostId": $('#hostIdId').val()},
+            function (response) {
+                if (response.body == null || response.body == undefined || response.body.length == 0) {
+                    layer.alert("当前主机下没有可用编号,不允许进行添加！", {
+                        shade: [0.1, '#fff']
+                    });
+                } else {
+                    $("#probeBhId").val(response.body[0]);
+                }
+            }
+        );
+    }
+
+    function hostSelectOnChange() {
+        if ($('#hostIdId').val() != -1 && $('#hostIdId').val() != $("#probeBhId").val()) {
+            $("#probeBhId").val('');
+        }
+    }
+
+    function update() {
+        common_ajax.defaultFunc(
+            '/manual/update',
+            $("#sForm").serialize(),
+            function (response) {
+                window.parent.refreshPage();
+            }
+        );
+    }
+
+    function save() {
+        common_ajax.defaultFunc(
+            '/manual/save',
+            $("#sForm").serialize(),
+            function (response) {
+                window.parent.refreshPage();
+            }
+        );
+    }
+</script>
+</html>

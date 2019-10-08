@@ -1,0 +1,86 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="common/_header.html::commonHeader('人员管理修改密码')" />
+<body>
+	<article class="page-container">
+		<form id="sForm" name="sForm" method="post" class="form form-horizontal">
+			<table class="table">
+				<tr class="text-c ">
+					<td class="text-l"><span class="c-red">*</span>用&ensp;户&ensp;名:</td>
+					<td class="text-r" colspan='1'><input type="text" class="input-text" readonly name='users' th:value="${users}" id='users'>
+					</td>
+				</tr>
+				<tr class="text-c ">
+					<td class="text-l"><span class="c-red">*</span>新&ensp;密&ensp;码:</td>
+					<td class="text-r" colspan='1'><input type="password" class="input-text" name='password' value="" id='password'>
+					</td>
+				</tr>
+				<tr class="text-c ">
+					<td class="text-l"><span class="c-red">*</span>确认密码:</td>
+					<td class="text-r" colspan='1'><input type="password" class="input-text" name='repassword' value="" id='repassword'>
+					</td>
+				</tr>
+				
+			</table>
+			<div align="center"><a class="text-c " id='msg'><br/></a></div>
+			<div align="center">
+			<input class="btn btn-primary radius" type="button" onclick="update()" value="修改">
+			</div>
+			<input type="hidden" th:value="${id}" id='id' name='id' value=''>
+		</form>
+	</article>
+</body>
+<script>
+    $("#password").blur(function() {
+		$.ajax({
+			url : "registerPassword",
+			data : { password : $("#password").val() },
+			type : "POST",
+			dataType : "json",
+			success : function(data) {
+				if (data.code == 0)
+				{
+					$("#msg").html("<br/>");
+				} else {
+					$("#msg").html(data.msg);
+					$("#msg").css("color", "red");
+				}
+			}
+		});
+	})
+	$("#repassword").blur(function() {
+		$.ajax({
+			url : "registerRepassword",
+			data : {password : $("#password").val(),repassword : $("#repassword").val() },
+			type : "POST",
+			dataType : "json", 
+			success : function(data) {
+				if (data.code == 0)
+				{
+					$("#msg").html("<br/>");
+				} else {
+					$("#msg").html(data.msg);
+					$("#msg").css("color", "red");
+				}
+			}
+		});
+	})
+	function update() {
+		$.ajax({
+			url : "registerUpdate",
+			async : false,
+			data : {id : $("#id").val(),password : $("#password").val(),repassword : $("#repassword").val() },
+			type : "POST",
+			dataType : "json", 
+			success : function(data) {
+				if (data.code == 0){
+					document.sForm.action = "/users/update";
+					document.sForm.submit();
+				} else {
+					layer.msg(data.msg);
+				}
+			}
+		});
+	}
+
+</script>
+</html>

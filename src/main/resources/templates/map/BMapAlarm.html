@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<style type="text/css">
+		body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+		#l-map{height:100%;width:78%;float:left;border-right:2px solid #bcbcbc;}
+		#r-result{height:100%;width:20%;float:left;}
+	</style>
+	<script src="/lib/jquery/1.9.1/jquery.min.js"></script>
+	<script src="/lib/layer/2.4/layer.js"></script>
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=iOMediwmdCy9WrORl8ZDD0K5td86xjMr"></script>
+	<title>添加多个标注点</title>
+	<!-- <meta http-equiv="refresh" content="5"> -->
+</head>
+<body>
+	<div id="allmap"></div>
+</body>
+<script type="text/javascript">
+	 var map = new BMap.Map("allmap");
+	 //卫星、三维地图
+	 map.addControl(new BMap.MapTypeControl());
+	 map.centerAndZoom(new BMap.Point(106.67564,33.139191), 17);
+	 map.enableScrollWheelZoom(true);
+	 aj();
+	 setInterval(aj, 5000);
+	 
+	 function aj(){
+		 map.clearOverlays();
+	  $.ajax({
+			url : "/probe/findSelectiveWeb",
+			data : { authority : parent.$("#authority").val() , departmentId : -1 },
+ 			type : "POST",
+ 			async : false, 
+			dataType : "json", 
+			success : function(data) {
+				if (data.code == 0) {
+					var image="";
+					var point="";
+					var msg="";
+					var probeType="";
+					for(var i=0;i<data.body.length;i++){
+						if(data.body[i].probeType=='0') {
+							probeType="一氧化碳检测点";
+						} else if(data.body[i].probeType=='1') {
+							probeType="氧气检测点";
+						} else if(data.body[i].probeType=='2') {
+							probeType="可燃气检测点";
+						}
+						if(data.body[i].probeType==0||data.body[i].probeType==2) {
+							if(data.body[i].realtimeValue>=data.body[i].highValue){
+								image="/image/high.gif";
+								point = new BMap.Point(data.body[i].lat,data.body[i].lng);
+								msg=""+data.body[i].probePosition+"<br>"+probeType+"<br>实时报警值 : "+data.body[i].realtimeValue+"<br>低爆值 : "+data.body[i].lowValue+"<br>高爆值 : "+data.body[i].highValue;
+								addMarker(image,point,data.body[i].probeName,msg);
+							} else if(data.body[i].realtimeValue>=data.body[i].lowValue&&data.body[i].realtimeValue<data.body[i].highValue){
+								image="/image/local_map_yellow.png";
+								point = new BMap.Point(data.body[i].lat,data.body[i].lng);
+								msg=""+data.body[i].probePosition+"<br>"+probeType+"<br>实时报警值 : "+data.body[i].realtimeValue+"<br>低爆值 : "+data.body[i].lowValue+"<br>高爆值 : "+data.body[i].highValue;
+								addMarker(image,point,data.body[i].probeName,msg);
+							}
+						} else if(data.body[i].probeType==1) {
+							if(data.body[i].realtimeValue>data.body[i].highValue){
+								image="/image/high.gif";
+								point = new BMap.Point(data.body[i].lat,data.body[i].lng);
+								msg=""+data.body[i].probePosition+"<br>"+probeType+"<br>实时报警值 : "+data.body[i].realtimeValue+"<br>低爆值 : "+data.body[i].lowValue+"<br>高爆值 : "+data.body[i].highValue;
+								addMarker(image,point,data.body[i].probeName,msg);
+							} else if(data.body[i].realtimeValue<data.body[i].lowValue&&data.body[i].realtimeValue>=0){
+								image="/image/local_map_yellow.png";
+								point = new BMap.Point(data.body[i].lat,data.body[i].lng);
+								msg=""+data.body[i].probePosition+"<br>"+probeType+"<br>实时报警值 : "+data.body[i].realtimeValue+"<br>低爆值 : "+data.body[i].lowValue+"<br>高爆值 : "+data.body[i].highValue;
+								addMarker(image,point,data.body[i].probeName,msg);
+							}
+						}
+					} 
+				} else {
+					layer.msg(data.msg);
+				}
+			}
+		}); 
+	 }
+	
+	function addMarker(image,point,tit,msg){
+		var myIcon = new BMap.Icon(image, new BMap.Size(25,25),{
+            anchor:new BMap.Size(13,15),
+            imageOffset:new BMap.Size(0,0)
+        })
+		var mk = new BMap.Marker(point,{icon:myIcon});
+	  	map.addOverlay(mk);
+		var opts = {
+			width : 200,     // 信息窗口宽度
+			height: 140,     // 信息窗口高度
+			title : tit , // 信息窗口标题
+			}
+		var infoWindow = new BMap.InfoWindow(msg, opts);  // 创建信息窗口对象 
+		mk.addEventListener("click", function(){         
+			map.openInfoWindow(infoWindow,point); //开启信息窗口
+		});
+	}
+</script>
+</html>

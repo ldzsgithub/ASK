@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+	<script src="/lib/echarts/echarts.min.js"></script>
+</body>
+<script>
+	var myChart4 = echarts.init(document.getElementById('p4'));
+	myChart4.setOption({
+		title : {
+	        text: '近七日未解决问题',
+	        x:'center'
+	    },
+		xAxis : {
+			axisLabel : {
+				interval : 0,
+                rotate : "45",
+				textStyle : {
+					fontSize : 13,
+					fontStyle : 'bolder'
+				}
+			},
+			type : 'category',
+			data : []
+		},
+		yAxis : {
+			axisLabel : {
+				textStyle : {
+					fontSize : 13,
+					fontStyle : 'bolder'
+				}
+			},
+			type : 'value'
+		},
+		series : [ {
+			data : [],
+			type : 'line',
+			smooth : true
+		} ]
+	});
+	var date = [];
+	date.push(df(6));
+	date.push(df(5));
+	date.push(df(4));
+	date.push(df(3));
+	date.push(df(2));
+	date.push(df(1));
+	date.push(df(0));
+	function df(a) {
+		return new Date(Date.now()-a*86400000).getMonth()+1+"月"+new Date(Date.now()-a*86400000).getDate()+"日"
+	}
+	myChart4.setOption({
+		xAxis : {
+			data : date
+		}
+	});
+	$.ajax({
+	    type : "post",
+	    async : true,
+	    url : "pp4",
+	    dataType : "json",
+	    success : function(result) {
+	        if (result) {
+	        	myChart4.setOption({
+	        		series : [ {
+	        			data : result.body,
+	        			type : 'line',
+	        			smooth : true
+	        		} ]
+	        	});
+	        }
+	    },
+	    erro : function (){
+	    	alert("折线图数据加载失败");
+	    }
+	})
+</script>
+</html>

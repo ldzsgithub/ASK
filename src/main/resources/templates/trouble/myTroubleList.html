@@ -1,0 +1,73 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="common/_header.html::commonHeader('我的问题')"/>
+<body>
+<article class="page-container">	
+    <form id="sForm" name="sForm" class="form form-horizontal">
+        <table class="table table-border table-bordered table-bg">
+        	<thead>
+            	<tr class="text-c ">
+                	<th width="80">序号</th>
+                	<th>问题梗要</th>
+                	<th width="70">紧急程度</th>
+                	<th width="130">提交人</th>
+                	<th width="130">起始时间</th>
+                	<th width="130">解决期限</th>
+                	<th width="130">操作</th>
+            	</tr>
+            </thead>
+            <tbody>
+                <tr class="text-c" th:each="t,iterStat:${trouble}">
+                    <td th:text="${iterStat.index+1}"></td>
+                    <td th:text="${t.troubleTitle}"></td>
+                    <td>
+                    	<span th:if="${t.troubleLevel == 1}" class="label label-success radius">普通</span>
+                        <span th:if="${t.troubleLevel == 2}" class="label label-warning radius">紧急</span>
+                        <span th:if="${t.troubleLevel == 3}" class="label label-danger radius">非常紧急</span>
+                    </td>
+                    <td>
+                    	<a class="badge badge-secondary radius" th:text="${t.submitterUser==null?null:t.submitterUser.name}" 
+                    		th:onclick="userInfo([[${t.submitterUser==null?null:t.submitterUser.id}]])"></a>
+                    </td>
+                    <td th:text="${#dates.format(t.creatTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:text="${#dates.format(t.termTime, 'yyyy-MM-dd HH:mm:ss')}"
+                  		th:style="${new java.util.Date().getTime()-t.termTime.getTime()>-86400000?'color:#F00;':
+                    	(new java.util.Date().getTime()-t.termTime.getTime()>-3*86400000?'color:#FFD700;':'color:#000;')}"></td>
+					<td><a class="label label-success radius" th:onclick="'toPageJump('+(${t.id})+',3)'">解决问题</a></td>
+                </tr>
+            </tbody>
+        </table>
+        <input hidden th:value=${id} id='id' name='id'>
+    </form>
+</article>
+</body>
+<script>
+	if($("#id").val()==""||$("#id").val()==null){
+		$("#id").val(parent.$("#id").val());
+		window.location.href = "/trouble/toMyTrouble?id="+$("#id").val();
+	}
+	function toPageJump(id,flag){
+		layer.open({
+			type : 2,
+			area : [ '100%', '100%' ],
+			anim : 3,
+			title : '处理问题',
+			content : '/trouble/pageJump?id='+id+'&flag='+flag
+		});
+	}
+	function userInfo(id){
+		layer.open({
+			type : 2,
+			area : [ '400px', '300px' ],
+			fixed : false,
+			maxmin : true,
+			anim : 3,
+			title : '用户信息',
+			content : '/users/userInfo?id=' + id
+		});
+	}
+	function closeLayer(){
+        layer.closeAll();
+        window.location.href = "/trouble/toMyTrouble";
+    }
+</script>
+</html>

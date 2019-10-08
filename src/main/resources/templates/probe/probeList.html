@@ -1,0 +1,161 @@
+﻿<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<header>
+    <head th:include="common/_header.html::commonHeader('气体探头管理')"/>
+</header>
+<body>
+<article class="page-container">
+    <form id="sForm" name="sForm">
+        <div class="text-l ">
+            主机名称:
+            <select name="hostId" class="input-text" style="width:250px">
+                <option value="-1">全部</option>
+                <option th:each="h:${hosts}" th:value="${h.hostId}" th:text="${h.hostName}" th:selected="${h.hostId == probe.hostId}"></option>
+            </select>
+            探头名称: <input type="text" class="input-text" style="width:250px" name='probeName' th:value="${probe.probeName}" id='probeNameId'>
+            &nbsp;&nbsp;
+            警告音开关:
+            <input type="checkbox" id="alarmCb">
+            <audio id="music2" style='display:none' src="/video/waring_music.wav"  loop="loop"></audio>
+            &nbsp;&nbsp;
+            <button type="button" onclick="queryDate()" class="btn btn-success radius"><i class="Hui-iconfont">&#xe665;</i>搜索</button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" onclick="pageJump(true,-1)" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i>添加</button>
+        </div>
+        <div class="mt-20">
+            <table class="table table-border table-bordered table-bg">
+                <thead>
+                <tr class="text-c ">
+                    <th width="50">序号</th>
+                    <th width=35%>名称</th>
+                    <th width=35%>位置</th>
+                    <th width="50">负责人</th>
+                    <th width="40">启用</th>
+                    <th width="50">低爆值</th>
+                    <th width="50">高爆值</th>
+                    <th width="80">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="text-c" th:each="l,iterStat:${list}">
+                    <td th:text="${iterStat.count }+${pageSize}*(${pageNo}-1)"></td>
+                    <td th:text="${l.probeName}"></td>
+                    <td th:text="${l.probePosition}"></td>
+                    <td>
+                    	<a class="badge badge-secondary radius" th:text="${l.users==null?null:l.users.name}" 
+                    	th:onclick="userInfo([[${l.users==null?null:l.users.id}]])"></a>
+                    </td>
+                    <td th:if="${l.probeEnable}== 0"><span class="label label-success radius">启用</span></td>
+                    <td th:if="${l.probeEnable}== 1"><span class="label radius">关闭</span></td>
+                    <td th:text="${l.lowValue}"></td>
+                    <td th:text="${l.highValue}"></td>
+                    <td class="text-c">
+                        <a th:onclick="'pageJump(false,'+(${l.probeId})+')'" class="label label-primary radius">修改</a>  
+                        <a th:onclick="'deleteAlert('+(${l.probeId})+')'" class="label label radius">删除</a>  
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="layerPageId" style="width: 100%;text-align: center;margin-top: 10px;"></div>
+        <input type="hidden" th:value="${pages}" id="pagesId" name="pages">
+        <input type="hidden" th:value="${pageNo}" id="pageNoId" name="pageNo">
+        <input type="hidden" th:value="${pageSize}" id="pageSizeId" name="pageSize">
+        <input type="hidden" th:value="${authority}" id="authority" name="authority">
+    </form>
+</article>
+</body>
+
+<script>
+	if(parent.$("#authority").val()!=""&&parent.$("#authority").val()!=null){
+		if($("#authority").val()==""||$("#authority").val()==null){
+			$("#authority").val(parent.$("#authority").val());
+			queryDate();
+		}
+	} else {
+		layer.msg("当前用户没有权限");
+	}
+	
+        laypage({
+            cont: 'layerPageId',
+            pages: $("#pagesId").val(),
+            curr: $("#pageNoId").val(),
+            jump: function (e, first) {
+                if (!first) {
+                    document.getElementById("pageNoId").value = e.curr;
+                    document.sForm.action = "/probe/findSelectivePageWeb";
+                    document.sForm.submit();
+                }
+            }
+        });
+
+    function queryDate() {
+        $("#pageNoId").val("1");
+        $("#pages").val("");
+        $("#pageSizeId").val("");
+        document.sForm.action = "/probe/findSelectivePageWeb";
+        document.sForm.submit();
+    }
+
+
+    function pageJump(isAdd, id) {
+        var titleStr = (isAdd ? "添加" : "修改") + "气体探头";
+        var index = layer.open({
+            type: 2,
+            area: ['400px', '220px'],
+            fixed: false,
+            maxmin: true,
+            anim: 3,
+            title: titleStr,
+            content: "/probe/pageJump?id=" + id + "&isAdd=" + isAdd + '&authority=' + $("#authority").val()
+        });
+        layer.full(index);
+    }
+
+    function deleteAlert(id) {
+        common_ajax.deleteFunc(
+            '/probe/deleteById',
+            {"probeId":id},
+            function (response) {
+                queryDate(false);
+            }
+        );
+    }
+
+    var int=self.setInterval("clock()",2500);
+    function clock(){
+        if ($("#alarmCb").prop("checked")) {
+            common_ajax.defaultFunc(
+                '/probe/alarm',{},
+                function (response) {
+                    if(response.body != null && response.body.length>0){
+                        $("#music2")[0].play();
+                    }else{
+                        $("#music2")[0].pause();
+                    }
+                }
+            );
+        } else {
+            $("#music2")[0].pause();
+        }
+    }
+	
+    function userInfo(id){
+    	if(id==null) return;
+		layer.open({
+			type : 2,
+			area : [ '400px', '300px' ],
+			fixed : false,
+			maxmin : true,
+			anim : 3,
+			title : '用户信息',
+			content : '/users/userInfo?id=' + id
+		});
+	}
+    
+    function refreshPage() {
+        layer.closeAll();
+        window.location.href = "/probe/findSelectivePageWeb";
+    }
+</script>
+</html>

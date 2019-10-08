@@ -1,0 +1,340 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy23.mapper.ProbeMapper">
+	<resultMap id="BaseResultMap" type="com.jy23.entity.Probe">
+		<id property="probeId" column="Probe_Id" jdbcType="INTEGER" />
+		<result property="probeBh" column="Probe_Bh" jdbcType="INTEGER" />
+		<result property="probeName" column="Probe_Name" jdbcType="VARCHAR" />
+		<result property="probePosition" column="Probe_Position" jdbcType="VARCHAR" />
+		<result property="probeRemarks" column="Probe_Remarks" jdbcType="VARCHAR" />
+		<result property="probeType" column="Probe_Type" jdbcType="INTEGER" />
+		<result property="probeEnable" column="Probe_Enable" jdbcType="FLOAT" />
+		<result property="hostId" column="Host_Id" jdbcType="INTEGER" />
+		<result property="hostAddress" column="Host_Address" jdbcType="INTEGER" />
+		<result property="highValue" column="high_value" jdbcType="FLOAT" />
+		<result property="lowValue" column="low_value" jdbcType="FLOAT" />
+		<result property="realtimeValue" column="realtime_value" jdbcType="FLOAT" />
+		<result property="realtimeState" column="realtime_state" jdbcType="VARCHAR" />
+		<result property="bjzt" column="bjzt" jdbcType="FLOAT" />
+		<result property="bjztMc" column="bjzt_mc" jdbcType="VARCHAR" />
+		<result property="bjztOld" column="bjzt_old" jdbcType="FLOAT" />
+		<result property="sfbj" column="sfbj" jdbcType="INTEGER" />
+		<result property="cxsj" column="cxsj" jdbcType="INTEGER" />
+		<result property="lat" column="lat" jdbcType="VARCHAR"/>
+		<result property="lng" column="lng" jdbcType="VARCHAR"/>
+		<result property="customLat" column="custom_lat" jdbcType="VARCHAR"/>
+		<result property="customLng" column="custom_lng" jdbcType="VARCHAR"/>
+		<result property="probeManager" column="probe_manager" jdbcType="VARCHAR" />
+		
+		<result property="host_name" column="host_name" jdbcType="VARCHAR" />
+		<result property="department_name" column="department_name" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		probe_id,probe_bh, probe_name, probe_position,probe_remarks, probe_type, Probe_Enable, host_id,Host_Address,
+		high_value,low_value,realtime_value,realtime_state,bjzt,bjzt_mc,bjzt_old,sfbj,cxsj,lat,lng,custom_lat,custom_lng,probe_manager
+	</sql>
+	
+	<insert id="insertSelective" parameterType="com.jy23.entity.Probe"  useGeneratedKeys="true" keyProperty="probeId">
+		INSERT INTO Ask_probe
+		<trim prefix=" (" suffix=")" suffixOverrides=",">
+			<if test="hostId != null">
+				host_id,
+			</if>
+			<if test="hostAddress != null">
+				host_address,
+			</if>
+			<if test="probeBh != null">
+				probe_bh,
+			</if>
+			<if test="probeName != null">
+				probe_name,
+			</if>
+			<if test="probePosition != null">
+				probe_position,
+			</if>
+			<if test="probeRemarks != null">
+				probe_remarks,
+			</if>
+			<if test="probeEnable != null">
+				probe_enable,
+			</if>
+			<if test="lat != null">
+				custom_lat,
+			</if>
+			<if test="lng != null">
+				custom_lng,
+			</if>
+			<if test="probeType != null">
+				probe_type,
+			</if>
+			<if test="highValue != null">
+				high_value,
+			</if>
+			<if test="lowValue != null">
+				low_value,
+			</if>
+			<if test="probeManager != null">
+				probe_manager,
+			</if>
+		</trim>
+		<trim prefix=" values(" suffix=")" suffixOverrides=",">
+			<if test="hostId != null">
+				#{hostId},
+			</if>
+			<if test="hostAddress != null">
+				#{hostAddress},
+			</if>
+			<if test="probeBh != null">
+				#{probeBh},
+			</if>
+			<if test="probeName != null">
+				#{probeName},
+			</if>
+			<if test="probePosition != null">
+				#{probePosition},
+			</if>
+			<if test="probeRemarks != null">
+				#{probeRemarks},
+			</if>
+			<if test="probeEnable != null">
+				#{probeEnable},
+			</if>
+			<if test="lat != null">
+				#{lat},
+			</if>
+			<if test="lng != null">
+				#{lng},
+			</if>
+			<if test="probeType != null">
+				#{probeType},
+			</if>
+			<if test="highValue != null">
+				#{highValue},
+			</if>
+			<if test="lowValue != null">
+				#{lowValue},
+			</if>
+			<if test="probeManager != null">
+				#{probeManager},
+			</if>
+		</trim>
+	</insert>
+	
+	<select id="findProbeByHostId" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from Ask_probe
+		<where>
+			<if test="hostId != null ">
+				and host_id = #{hostId}
+			</if>
+		</where>
+	</select>
+
+	<select id="countAlarm" resultType="java.lang.Integer">
+		select COUNT(*) from Ask_probe 
+		where 
+		realtime_value <![CDATA[<]]> 0 
+		or
+		realtime_value <![CDATA[>]]>
+		low_value
+	</select>
+
+	<select id="selectRealTimeAll" resultMap="BaseResultMap">
+		SELECT
+		Ask_Probe.probe_name,
+		Ask_Probe.probe_position,
+		Ask_Probe.low_value,
+		Ask_Probe.high_value,
+		Ask_Probe.realtime_value
+		FROM
+		Ask_probe
+		WHERE
+		realtime_value <![CDATA[ >= ]]>
+		low_value
+		AND Ask_probe.probe_enable= 0
+	</select>
+
+	<update id="updateSelective" parameterType="com.jy23.entity.Probe">
+		update Ask_probe
+		<set>
+			<if test="probeBh != null ">
+				probe_bh = #{probeBh},
+			</if>
+			<if test="probeName != null ">
+				probe_name = #{probeName},
+			</if>
+			<if test="probePosition != null ">
+				probe_position = #{probePosition,},
+			</if>
+			<if test="probeRemarks != null ">
+				probe_remarks = #{probeRemarks},
+			</if>
+			<if test="hostId != null ">
+				host_id = #{hostId},
+			</if>
+			<if test="lat != null ">
+				custom_lat = #{lat},
+			</if>
+			<if test="lng != null ">
+				custom_lng = #{lng},
+			</if>
+			<if test="probeType != null ">
+				probe_type = #{probeType},
+			</if>
+			<if test="highValue != null ">
+				high_value = #{highValue},
+			</if>
+			<if test="lowValue != null ">
+				low_value = #{lowValue},
+			</if>
+			<if test="probeManager != null ">
+				probe_manager = #{probeManager},
+			</if>
+		</set>
+		where probe_id = #{probeId}
+	</update>
+	
+	<select id="haveAlarm" resultType="java.lang.Integer">
+		select probe_id from Ask_probe
+		where realtime_value <![CDATA[ >= ]]>
+		low_value
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from Ask_probe
+		where probe_id = #{probeId}
+	</delete>
+
+	<select id="selectProbeByDid" resultMap="BaseResultMap">
+		select
+		Ask_probe.*
+		from Ask_probe
+		where host_id in (
+		select host_id from Ask_host where department_id = #{department_id}
+		)
+	</select>
+
+	<select id="findProbeSelective" parameterType="com.jy23.entity.Probe" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from Ask_probe
+		<where>
+			<if test="probeName != null">
+				AND probe_name like ('%'+#{probeName,jdbcType=VARCHAR}+'%')
+			</if>
+			<if test="probePosition != null">
+				AND probe_position = #{probePosition,jdbcType=VARCHAR}
+			</if>
+			<if test="probeRemarks != null">
+				AND probe_remarks = #{probeRemarks,jdbcType=VARCHAR}
+			</if>
+			<if test="hostId != null">
+				AND host_id = #{hostId,jdbcType=INTEGER}
+			</if>
+			<if test="probeBh != null">
+				AND probe_Bh = #{probeBh,jdbcType=INTEGER}
+			</if>
+			<if test="probeEnable != null">
+				AND probe_enable = #{probeEnable,jdbcType=FLOAT}
+			</if>
+		</where>
+		order by probe_bh
+	</select>
+	
+	<select id="findByArea" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from Ask_probe
+		<where>
+			probe_area = #{hostId,jdbcType=INTEGER}
+		</where>
+		order by probe_bh
+	</select>
+
+	<select id="findByPrimaryKey" parameterType="com.jy23.entity.Probe" resultMap="BaseResultMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		FROM
+		Ask_probe
+		WHERE
+		probe_id = #{probeId}
+	</select>
+
+	<select id="count" parameterType="com.jy23.entity.Probe" resultType="java.lang.Integer">
+		select
+		count(*)
+		from Ask_probe
+		<where>
+			<if test="probeName != null">
+				AND probe_name like ('%'+#{probeName,jdbcType=VARCHAR}+'%')
+			</if>
+			<if test="probePosition != null">
+				AND probe_position = #{probePosition,jdbcType=VARCHAR}
+			</if>
+			<if test="probeRemarks != null">
+				AND probe_remarks = #{probeRemarks,jdbcType=VARCHAR}
+			</if>
+			<if test="hostId != null">
+				AND host_id = #{hostId,jdbcType=INTEGER}
+			</if>
+			<if test="probeEnable != null">
+				AND probe_enable = #{probeEnable,jdbcType=FLOAT}
+			</if>
+		</where>
+	</select>
+	
+	<select id="realTimeAlarmChar" resultMap="BaseResultMap">
+		SELECT
+		Ask_department.department_name,
+		Ask_host.host_name,
+		Ask_Probe.probe_name,
+		Ask_Probe.realtime_value,
+		Ask_Probe.low_value,
+		Ask_Probe.high_value,
+		Ask_Probe.probe_manager
+		FROM
+		Ask_probe ,Ask_host ,Ask_department
+		WHERE
+		<if test="department_id != null">
+		Ask_department.department_id=#{department_id} AND 
+		</if>
+		Ask_probe.probe_enable= 0
+		AND Ask_host.host_id = Ask_Probe.host_id
+		AND Ask_host.department_id = Ask_department.department_id
+		AND  (((Ask_Probe.probe_type=0 or Ask_Probe.probe_type=2 )and realtime_value <![CDATA[ >= ]]> low_value)
+			or (Ask_Probe.probe_type=1 and ((realtime_value<![CDATA[ < ]]>low_value and realtime_value<![CDATA[ >= ]]>0)
+					 or realtime_value<![CDATA[ > ]]>high_value)))
+	</select>
+	
+	<select id="selectProbeByQx" resultMap="BaseResultMap">
+		SELECT
+		probe_id,probe_bh, probe_name, probe_position,probe_remarks, probe_type, Probe_Enable, ASK_Probe.host_id,ASK_Probe.Host_Address,
+		high_value,low_value,realtime_value,realtime_state,bjzt,bjzt_mc,bjzt_old,sfbj,cxsj,lat,lng,probe_manager
+		FROM
+		Ask_probe ,Ask_host
+		WHERE
+		ASK_Probe.Probe_Name like ('%'+#{probeName}+'%')
+		AND
+		ASK_Probe.Host_Id=ASK_Host.Host_Id 
+  		AND
+  		ASK_Host.Department_Id in
+  		<foreach collection="qx" open="(" separator="," close=")" item="departmentId">
+            #{departmentId}
+        </foreach>
+	</select>
+	
+	<select id="countProbeByQx" resultType="java.lang.Integer">
+		SELECT
+		count(*)
+		FROM
+		Ask_probe ,Ask_host
+		WHERE
+		ASK_Probe.Probe_Name like ('%'+#{probeName}+'%')
+		AND
+		ASK_Probe.Host_Id=ASK_Host.Host_Id
+  		AND
+  		ASK_Host.Department_Id=#{departmentId}
+	</select>
+</mapper>

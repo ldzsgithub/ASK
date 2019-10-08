@@ -1,0 +1,166 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<header>
+	<head th:include="common/_header.html::commonHeader('主机管理')" />
+</header>
+<body>
+
+	<article class="page-container">
+		<form id="sForm" name="sForm" method="post" class="form form-horizontal">
+			<table class="table">
+				<tr class="text-c">
+					<td class="text-right"><label>标题：</label></td>
+					<td><input type="text" class="input-text" id="troubleTitle" name="troubleTitle"
+						th:value="${trouble.troubleTitle}" th:readonly="${flag=='0'||flag=='3'}?readonly"></td>
+				</tr>
+				<tr class="text-c">
+					<td class="text-right"><label>内容：</label></td>
+					<td><textarea class="input-text" style="height:300px;resize:none;"  id="troubleContent" name="troubleContent" 
+						th:text="${trouble.troubleContent}" th:readonly="${flag=='0'||flag=='3'}?readonly"></textarea></td>
+				</tr>
+				<tr class="text-c">
+					<td colspan="1" class="text-right"><label>负责人：</label></td>
+					<td>
+						<select name="major" id="major" class="input-text" th:if="${flag}==2">
+                			<option value="-1">全部</option>
+                			<option th:each="u:${user}" th:value="${u.id}" th:text="${u.name}" th:selected="${u.id == trouble.major}"></option>
+            			</select>
+						<select name="major" id="major" class="input-text" th:if="${flag!='2'}" 
+								onfocus="this.defaultIndex=this.selectedIndex;" onchange="this.selectedIndex=this.defaultIndex;">
+                			<option value="-1">全部</option>
+                			<option th:each="u:${user}" th:value="${u.id}" th:text="${u.name}" th:selected="${u.id == trouble.major}"></option>
+            			</select>
+            		</td>
+				</tr>
+				<tr class="text-c">
+					<td colspan="1" class="text-right"><label>处理期限：</label></td>
+					<td>
+							创建日期：
+						<input type="text" class="input-text" name="creatTime" id="creatTime" readonly="readonly" style="width: 44%;"
+            					th:value="${#dates.format(trouble.creatTime, 'yyyy-MM-dd HH:mm:ss')}">
+            				--
+            				限制日期：
+            			<input type="text" class="input-text" name="termTime" id="termTime" readonly="readonly" style="width: 44%;" 
+            					th:value="${#dates.format(trouble.termTime, 'yyyy-MM-dd HH:mm:ss')}"
+            					onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM-dd HH:mm:ss'})"
+            					 th:if="${flag}==2">
+            			<input type="text" class="input-text" name="termTime" id="termTime" readonly="readonly" style="width: 44%;" 
+            					th:value="${#dates.format(trouble.termTime, 'yyyy-MM-dd HH:mm:ss')}"
+            					 th:if="${flag!='2'}">
+            		</td>
+				</tr>
+				<tr class="text-c ">
+					<td colspan="1" class="text-right"><label>紧急程度：</label></td>
+					<td class="text-l" >
+						<div class="radio-box" th:if="${flag}==2">
+							<input type="radio" id="troubleLevel-1" name="troubleLevel" th:value="1" th:checked="${trouble.troubleLevel==1}">
+							<label for="troubleLevel-1">普通</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" id="troubleLevel-2" name="troubleLevel" th:value="2" th:checked="${trouble.troubleLevel==2}">
+							<label for="troubleLevel-2">紧急</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" id="troubleLevel-3" name="troubleLevel" th:value="3" th:checked="${trouble.troubleLevel==3}">
+							<label for="troubleLevel-3">非常紧急</label>
+						</div>
+						<div class="radio-box" th:if="${flag}!=2" onClick='javascript:return false'>
+							<input type="radio" id="troubleLevel-1" name="troubleLevel" th:value="1" th:checked="${trouble.troubleLevel==1}">
+							<label for="troubleLevel-1">普通</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" id="troubleLevel-2" name="troubleLevel" th:value="2" th:checked="${trouble.troubleLevel==2}">
+							<label for="troubleLevel-2">紧急</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<input type="radio" id="troubleLevel-3" name="troubleLevel" th:value="3" th:checked="${trouble.troubleLevel==3}">
+							<label for="troubleLevel-3">非常紧急</label>
+						</div>
+					</td>
+				</tr>
+				<tr class="text-c ">
+					<td colspan="1" class="text-right"><label>提交人：</label></td>
+					<td><input type="text" class="input-text" id="submitter" name="submitter" th:value="${trouble.submitterUser.name}" readonly></td>
+				</tr>
+				<tr class="text-c" th:hidden="${flag!='3'}?hidden">
+					<td class="text-right"><span class="c-red">*</span><label>备注：</label></td>
+					<td><textarea class="input-text" style="height:100px;resize:none;"  placeholder="填写解决过程或未解决的原因" id="troubleProcess" name="troubleProcess" 
+						th:text="${trouble.troubleProcess}"></textarea></td>
+				</tr>
+				<tr  class="text-c">
+					<td id="tr1" colspan="1" class="text-right"  hidden><span class="c-red">*</span><label class="c-red">选择上级：</label></td>
+					<td>
+						<select name="newMajor" id="newMajor" class="input-text" hidden>
+                			<option value="-1">全部</option>
+                			<option th:each="u:${user}" th:value="${u.id}" th:text="${u.name}"></option>
+            			</select>
+            		</td>
+				</tr>
+			</table>
+			<input type="hidden" name="id" th:value="${trouble.id}">
+			<input type="hidden" name="flag" id="flag" th:value="${flag}">
+			<br>
+			<div class="row cl">
+				<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3" th:if="${flag} ==2">
+					<input class="btn btn-primary radius" type="button" onclick="update()" value="修改">
+				</div>
+				<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3" th:if="${flag} ==3">
+					<input class="btn btn-success radius" type="button" onclick="solve(true)" value="已解决">
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<input class="btn btn-danger radius" type="button" onclick="solve(false)" value="解决不了，交给上级">
+				</div>
+			</div>
+		</form>
+	</article>
+</body>
+<script>
+	if($("#submitter").val()==null||$("#submitter").val()==""){
+		$("#submitter").val(parent.parent.$("#id").val());
+	}
+    function update() {
+    	if($("#troubleTitle").val()==''||$("#troubleTitle").val()==null){
+    		layer.msg("标题不能为空");
+    		return;
+    	}
+    	if($("#troubleContent").val()==''||$("#troubleContent").val()==null){
+    		layer.msg("内容不能为空");
+    		return;
+    	}
+    	if($("#major").val()==-1||$("#major").val()==null){
+    		layer.msg("请选择负责人");
+    		return;
+    	}
+        if($('#creatTime').val()>=$('#termTime').val()){
+        	layer.msg("请输入正确的日期")
+            return
+        } 
+        common_ajax.defaultFunc(
+            '/trouble/update',
+            $("#sForm").serialize(),
+            function (response) {
+                window.parent.closeLayer();
+            }
+        );
+    }
+
+    function solve(boo) {
+    	if(!boo){
+    		$("#flag").val(32);
+    		$("#tr1")[0].style.display="block";
+    		$("#newMajor")[0].style.display="block";
+    		if($("#newMajor").val()==-1){
+            	layer.msg("请选择要提交的上级");
+            	return;
+            }
+    	} else {
+    		$("#tr1")[0].style.display="none";
+    		$("#newMajor")[0].style.display="none";
+    		$("#flag").val(31);
+    	}
+        if($("#troubleProcess").val()==null||$("#troubleProcess").val()==""){
+        	layer.msg("备注不能为空");
+        	return;
+        }
+        common_ajax.defaultFunc(
+                '/trouble/solve',
+                $("#sForm").serialize(),
+                function (response) {
+                    window.parent.closeLayer();
+                }
+            );
+    }
+</script>
+</html>

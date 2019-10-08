@@ -1,0 +1,109 @@
+<!DOCTYPE html>  
+<html>
+<head>  
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">  
+html{height:100%;}  
+body{height:100%;margin:0px;padding:0px;}
+.BMap_cpyCtrl{display:none;}
+.anchorBL{display:none;}
+#container{height:100%;background: url('/image/se.png');}  
+</style>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=iOMediwmdCy9WrORl8ZDD0K5td86xjMr"></script>
+</head>
+
+<body>
+<div id="container"></div>
+<script type="text/javascript"> 
+var tileLayer = new BMap.TileLayer();
+tileLayer.getTilesUrl = function(tileCoord, zoom) {
+	var x = tileCoord.x;
+	var y = tileCoord.y;
+	return '/map/tiles/' + zoom + '/tile-' + x + '_' + y + '.png';
+}
+var MyMap = new BMap.MapType('MyMap', tileLayer, {minZoom: 9, maxZoom: 10});
+var map = new BMap.Map('container', {mapType: MyMap});
+map.centerAndZoom(new BMap.Point(0, 0), 9);
+map.enableScrollWheelZoom(true);
+
+aj();
+setInterval(aj, 5000);
+
+function aj(){
+	map.clearOverlays();
+  	$.ajax({
+		url : "/probe/findSelectiveWeb",
+		data : { authority : parent.$("#authority").val() , departmentId : -1 },
+			type : "POST",
+			async : false, 
+			dataType : "json", 
+		success : function(data) {
+			if (data.code == 0) {
+				var image="";
+				var point="";
+				var msg="";
+				for(var i=0;i<data.body.length;i++){
+					if(data.body[i].probeType==0||data.body[i].probeType==2) {
+						if(data.body[i].realtimeValue>=data.body[i].highValue){
+							image="/image/high.gif";
+							point = new BMap.Point(data.body[i].customLat,data.body[i].customLng);
+							msg = windowMsg(data.body[i].probePosition,data.body[i].probeType,data.body[i].realtimeValue,data.body[i].lowValue,data.body[i].highValue);
+							addMarker(image,point,data.body[i].probeName,msg);
+						} else if(data.body[i].realtimeValue>=data.body[i].lowValue&&data.body[i].realtimeValue<data.body[i].highValue){
+							image="/image/local_map_yellow.png";
+							point = new BMap.Point(data.body[i].customLat,data.body[i].customLng);
+							msg = windowMsg(data.body[i].probePosition,data.body[i].probeType,data.body[i].realtimeValue,data.body[i].lowValue,data.body[i].highValue);
+							addMarker(image,point,data.body[i].probeName,msg);
+						}
+					} else if(data.body[i].probeType==1) {
+						if(data.body[i].realtimeValue>data.body[i].highValue){
+							image="/image/high.gif";
+							point = new BMap.Point(data.body[i].customLat,data.body[i].customLng);
+							msg = windowMsg(data.body[i].probePosition,data.body[i].probeType,data.body[i].realtimeValue,data.body[i].lowValue,data.body[i].highValue);
+							addMarker(image,point,data.body[i].probeName,msg);
+						} else if(data.body[i].realtimeValue<data.body[i].lowValue&&data.body[i].realtimeValue>=0){
+							image="/image/local_map_yellow.png";
+							point = new BMap.Point(data.body[i].customLat,data.body[i].customLng);
+							msg = windowMsg(data.body[i].probePosition,data.body[i].probeType,data.body[i].realtimeValue,data.body[i].lowValue,data.body[i].highValue);
+							addMarker(image,point,data.body[i].probeName,msg);
+						}
+					}
+				} 
+			} else {
+				layer.msg(data.msg);
+			}
+		}
+	}); 
+}
+
+function windowMsg(probePosition,probeType,realtimeValue,lowValue,highValue) {
+	if(probeType=='0') {
+		probeType="一氧化碳检测点";
+	} else if(probeType=='1') {
+		probeType="氧气检测点";
+	} else if(probeType=='2') {
+		probeType="可燃气检测点";
+	}
+	return "位置 : "+probePosition+"<br>"+probeType+"<br><br>实时报警值 : <font color='#FF0000'>"+realtimeValue+"</font><br>低爆值 : "+lowValue+"<br>高爆值 : "+highValue;
+}
+
+function addMarker(image,point,tit,msg){
+	var myIcon = new BMap.Icon(image, new BMap.Size(25,25),{
+        anchor:new BMap.Size(13,15),
+        imageOffset:new BMap.Size(0,0)
+    })
+	var mk = new BMap.Marker(point,{icon:myIcon});
+  	map.addOverlay(mk);
+	var opts = {
+		width : 200,     // 信息窗口宽度
+		height: 155,     // 信息窗口高度
+		title : tit , // 信息窗口标题
+		}
+	var infoWindow = new BMap.InfoWindow(msg, opts);  // 创建信息窗口对象 
+	mk.addEventListener("click", function(){         
+		map.openInfoWindow(infoWindow,point); //开启信息窗口
+	});
+}	
+</script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+﻿<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="common/_header.html::commonHeader('com口管理')"/>
+<body>
+
+<article class="page-container">
+    <form id="sForm" name="sForm"  class="form form-horizontal">
+
+        <table class="table">
+            <tr class="text-c ">
+                <td class="text-r" colspan=1>
+                    <span class="c-red">*</span>串口名称:
+                </td>
+                <td class="text-l"colspan='1' >
+                    <input type="text" class="input-text"  name='comName' th:value="${com?.comName}"  id='comNameId'>
+                </td>
+                <td class="text-r" colspan=1>
+                    <span class="c-red">*</span>是否启用:
+                </td>
+                <td class="text-l"colspan='1' >
+                    <div>
+                        <div class="radio-box">
+                            <input type="radio" name="comEnable" id="comEnable_0" th:value="0" th:checked="${com?.comEnable== '0'}">
+                            <label for="comEnable_0">启用</label>
+                        </div>
+                        <div class="radio-box">
+                            <input type="radio" name="comEnable" id="comEnable_1" th:value="1" th:checked="${com?.comEnable== '1'}">
+                            <label for="comEnable_1">不启用</label>
+                        </div>
+                    </div>
+
+                </td>
+            </tr>
+            <tr class="text-c ">
+                <td class="text-r" colspan=1>
+                    <span class="c-red">*</span>波特率:
+                </td>
+                <td class="text-l"colspan='1' >
+                    <input type="text" class="input-text"  name='comBautrate' th:value="${com?.comBautrate}"  id='comBautrateId'>
+                </td>
+                <td class="text-r" colspan=1>
+                    <span class="c-red">*</span>校验位:
+                </td>
+                <td class="text-l"colspan='1' >
+                    <input type="text" class="input-text"  name='comJyw' th:value="${com?.comJyw}"  id='comJywId'>
+                </td>
+            </tr>
+            <tr class="text-c ">
+                <td class="text-r" colspan=1>
+                    <span class="c-red">*</span>停止位:
+                </td>
+                <td class="text-l"colspan='1' >
+                    <input type="text" class="input-text"  name='comTzw' th:value="${com?.comTzw}"  id='comTzwId'>
+                </td>
+                <td class="text-r" colspan=1>
+                    <span class="c-red">*</span>数据位:
+                </td>
+                <td class="text-l"colspan='1' >
+                    <div>
+                        <div class="radio-box">
+                            <input type="radio" name="comSjw" id="comSjw_8" th:value="8" th:checked="${com?.comSjw== '8'}">
+                            <label for="comSjw_8">8</label>
+                        </div>
+                        <div class="radio-box">
+                            <input type="radio" name="comSjw" id="comSjw_16" th:value="16" th:checked="${com?.comSjw== '16'}">
+                            <label for="comSjw_16">16</label>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr class="text-c ">
+                <td class="text-r" colspan=1>
+                    <span class="c-red">*</span>流控制:
+                </td>
+                <td class="text-l"colspan='1' >
+                    <input type="text" class="input-text"  name='comLkz' th:value="${com?.comLkz}"  id='comLkzId'>
+                </td>
+                <td class="text-r" colspan=1>
+                    <span class="c-red">*</span>模式:
+                </td>
+                <td class="text-l"colspan='1' >
+                    <div>
+                        <div class="radio-box">
+                            <input type="radio" name="comMode" id="comMode_0" th:value="0" th:checked="${com?.comMode == 0}">
+                            <label for="comMode_0">TCP模式</label>
+                        </div>
+                        <div class="radio-box">
+                            <input type="radio" name="comMode" id="comMode_1" th:value="1" th:checked="${com?.comMode == 1}">
+                            <label for="comMode_1">串口模式</label>
+                        </div>
+                    </div>
+
+                </td>
+            </tr>
+            <tr class="text-c ">
+                <td class="text-r" colspan=1>
+                    <span class="c-red">*</span>串口:
+                </td>
+                <td class="text-l"colspan='1' >
+                    <input type="text" class="input-text"  name='comPort' th:value="${com?.comPort}"  id='comPortId'>
+                </td>
+                <td class="text-r" colspan=1>
+                    <span class="c-red">*</span>采集时间间隔，单位毫秒:
+                </td>
+                <td class="text-l"colspan='1' >
+                    <div>
+                        <div class="radio-box">
+                            <input type="radio" name="comCollectiontime" id="comCollectiontime_1000" th:value="1000" th:checked="${com?.comCollectiontime== 1000}">
+                            <label for="comCollectiontime_1000">1000</label>
+                        </div>
+                        <div class="radio-box">
+                            <input type="radio" name="comCollectiontime" id="comCollectiontime_2000" th:value="2000" th:checked="${com?.comCollectiontime== 2000}">
+                            <label for="comCollectiontime_2000">2000</label>
+                        </div>
+                        <div class="radio-box">
+                            <input type="radio" name="comCollectiontime" id="comCollectiontime_3000" th:value="3000" th:checked="${com?.comCollectiontime== 3000}">
+                            <label for="comCollectiontime_3000">3000</label>
+                        </div>
+                        <div class="radio-box">
+                            <input type="radio" name="comCollectiontime" id="comCollectiontime_4000" th:value="4000" th:checked="${com?.comCollectiontime== 4000}">
+                            <label for="comCollectiontime_4000">4000</label>
+                        </div>
+                        <div class="radio-box">
+                            <input type="radio" name="comCollectiontime" id="comCollectiontime_5000" th:value="5000" th:checked="${com?.comCollectiontime== 5000}">
+                            <label for="comCollectiontime_5000">5000</label>
+                        </div>
+                    </div>
+
+                </td>
+            </tr>
+        </table>
+
+
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                <div class="row cl">
+                    <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3" th:if="${FLAG} =='ADD'">
+                        <input class="btn btn-primary radius" type="button" onclick="save()" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+                    </div>
+                    <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3" th:if="${FLAG} =='UPDATE'">
+                        <input class="btn btn-primary radius" type="button" onclick="update()"
+                               value="&nbsp;&nbsp;保存&nbsp;&nbsp;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <input type="hidden" name="hostId" th:value="${com?.hostId}">
+        <input type="hidden" name="comId" th:value="${com?.comId}">
+
+    </form>
+</article>
+</body>
+<script>
+    function save() {
+        common_ajax.defaultFunc(
+            '/com/save',
+            $("#sForm").serialize(),
+            function (response) {
+                window.parent.refreshPage();
+            }
+        );
+    }
+
+    function update() {
+        common_ajax.defaultFunc(
+            '/com/update',
+            $("#sForm").serialize(),
+            function (response) {
+                window.parent.refreshPage();
+            }
+        );
+    }
+</script>
+</html>

@@ -1,0 +1,158 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<header>
+	<head th:include="common/_header.html::commonHeader('主机管理')" />
+</header>
+<body>
+
+	<article class="page-container">
+		<form id="sForm" name="sForm" method="post" class="form form-horizontal">
+			<table class="table">
+				<tr class="text-c ">
+					<td class="text-right"><label><span style="color: #ff0000">*</span>部门名称：</label></td>
+					<td>
+						<select name="departmentId" class="input-text">
+                			<option value="-1">全部</option>
+                			<option th:each="h:${department}" th:value="${h.departmentId}" th:text="${h.departmentName}" 
+                				th:selected="${h.departmentId == host.departmentId}"></option>
+            			</select>
+            		</td>
+				</tr>
+				<tr class="text-c ">
+					<td class="text-right"><label><span style="color: #ff0000">*</span>主机地址：</label></td>
+					<td><input type="text" class="input-text" th:value="${host.hostAddress}" id="hostAddressId" name="hostAddress"></td>
+				</tr>
+				
+				<tr class="text-c ">
+					<td colspan="1" class="text-right"><label><span class="c-red">*</span>主机名称：</label></td>
+					<td><input type="text" class="input-text" th:value="${host.hostName}" id="hostNameId" name="hostName">
+					</td>
+				</tr>
+
+				<tr class="text-c ">
+					<td colspan="1" class="text-right"><label><span class="c-red">*</span>主机位置：</label></td>
+					<td><input type="text" class="input-text" th:value="${host.hostPosition}" id="hostPositionId" name="hostPosition"></td>
+				</tr>
+
+				<tr class="text-c ">
+					<td colspan="1" class="text-right"><label><span class="c-red">*</span>备注：</label></td>
+					<td><input type="text" class="input-text" th:value="${host.hostRemarks}" id="hostRemarksId" name="hostRemarks"></td>
+				</tr>
+
+				<tr class="text-c ">
+					<td colspan="1" class="text-right"><label><span class="c-red">*</span>启用：</label></td>
+					<td class="text-l">
+						<div class="">
+							<div class="radio-box">
+								<input type="radio" id="hostEnable-1" name="hostEnable" th:value="0" th:checked="${host.hostEnable== 0}">
+								<label for="hostEnable-1">启用&nbsp;</label>
+							</div>
+							<div class="radio-box">
+								<input type="radio" id="hostEnable-2" name="hostEnable" th:value="1" th:checked="${host.hostEnable== 1}">
+								<label for="hostEnable-2">停用</label>
+							</div>
+						</div>
+					</td>
+				</tr>
+				
+				<tr class="text-c ">
+					<td colspan="1" class="text-right"><label><span class="c-red">*</span>通讯状态：</label></td>
+					<td class="text-l">
+						<div class="">
+							<div class="radio-box">
+								<input type="radio" id="transStatus-1" name="transStatus" th:value="0" th:checked="${host.transStatus== 0}">
+								<label for="transStatus-1">正常&nbsp;</label>
+							</div>
+							<div class="radio-box">
+								<input type="radio" id="transStatus-2" name="transStatus"
+									th:value="-1" th:checked="${host.transStatus== -1}"> <label
+									for="transStatus-2">断开</label>
+							</div>
+						</div>
+					</td>
+				</tr>
+
+				<tr class="text-c ">
+					<td class="text-right"><label><span class="c-red">*</span>通道数量：</label></td>
+					<td>
+						<div class="text-l">
+							<div class="radio-box">
+								<input type="radio" name="numberChannels" id="numberChannels-1"
+									th:value="8" th:checked="${host?.numberChannels== 8}"> <label
+									for="numberChannels-1">8&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+							</div>
+							<div class="radio-box">
+								<input type="radio" id="numberChannels-2" name="numberChannels" 
+								    th:value="16" th:checked="${host?.numberChannels== 16}"> <label
+									for="numberChannels-2">16</label>
+							</div>
+						</div>
+					</td>
+				</tr>
+
+				<tr class="text-c ">
+					<td colspan="1" class="text-right"><label><span
+							class="c-red">*</span>采集间隔：</label></td>
+					<td>
+						<div class="text-l">
+							<div class="radio-box">
+								<input type="radio" name="hostCollectiontime" id="hostCollectiontime-3"
+									th:value="1000" th:checked="${host?.hostCollectiontime== 1000}">
+								<label for="hostCollectiontime-3">1000</label>
+							</div>
+							<div class="radio-box">
+								<input type="radio" name="hostCollectiontime" id="hostCollectiontime-1"
+									th:value="2000" th:checked="${host?.hostCollectiontime== 2000}">
+								<label for="hostCollectiontime-1">2000</label>
+							</div>
+							<div class="radio-box">
+								<input type="radio" name="hostCollectiontime" id="hostCollectiontime-2"
+									th:value="3000" th:checked="${host?.hostCollectiontime== 3000}">
+								<label for="hostCollectiontime-2">3000</label>
+							</div>
+						</div>
+					</td>
+				</tr>
+
+				<tr class="text-c ">
+					<td colspan="1" class="text-right"><label><span
+							class="c-red">*</span>物联网卡号码：</label></td>
+					<td><input type="text" class="input-text"
+						th:value="${host?.registerCard}" id="registerCard" name="registerCard">
+					</td>
+				</tr>
+			</table>
+				<input type="hidden" name="hostId" th:value="${host?.hostId}">
+			<div class="row cl">
+				<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3" th:if="${FLAG} =='ADD'">
+					<input class="btn btn-primary radius" type="button" onclick="save()" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+				</div>
+				<div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3" th:if="${FLAG} =='UPDATE'">
+					<input class="btn btn-primary radius" type="button" onclick="update()" value="&nbsp;&nbsp;保存&nbsp;&nbsp;">
+				</div>
+			</div>
+		</form>
+	</article>
+</body>
+<script>
+    function update() {
+        common_ajax.defaultFunc(
+            '/host/update',
+            $("#sForm").serialize(),
+            function (response) {
+                window.parent.refreshPage();
+            }
+        );
+    }
+
+    function save() {
+        common_ajax.defaultFunc(
+            '/host/save',
+            $("#sForm").serialize(),
+            function (response) {
+                window.parent.refreshPage();
+            }
+        );
+    }
+</script>
+</html>

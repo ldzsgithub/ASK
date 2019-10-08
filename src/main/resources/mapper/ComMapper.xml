@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy23.mapper.ComMapper">
+
+	<sql id="Base_Column_List">
+		com_id,com_name, com_bautrate, com_enable, host_id,
+		com_state, com_jyw, com_tzw, com_sjw, com_lkz,
+		com_mode, com_port,com_collectiontime
+	</sql>
+
+	<resultMap id="BaseResultMap" type="com.jy23.entity.Com">
+		<id property="comId" column="com_id" jdbcType="INTEGER" />
+		<result property="comName" column="com_name" jdbcType="VARCHAR" />
+		<result property="comBautrate" column="com_bautrate" jdbcType="VARCHAR" />
+		<result property="comEnable" column="com_enable" jdbcType="VARCHAR" />
+		<result property="hostId" column="host_id" jdbcType="INTEGER" />
+		<result property="comState" column="com_state" jdbcType="INTEGER" />
+		<result property="comJyw" column="com_jyw" jdbcType="VARCHAR" />
+		<result property="comTzw" column="com_tzw" jdbcType="VARCHAR" />
+		<result property="comSjw" column="com_sjw" jdbcType="VARCHAR" />
+		<result property="comLkz" column="com_lkz" jdbcType="VARCHAR" />
+		<result property="comMode" column="com_mode" jdbcType="VARCHAR" />
+		<result property="comPort" column="com_port" jdbcType="INTEGER" />
+		<result property="comCollectiontime" column="com_collectiontime" jdbcType="INTEGER" />
+	</resultMap>
+
+	<insert id="insertSelective" parameterType="com.jy23.entity.Com" useGeneratedKeys="true" keyProperty="comId">
+		INSERT INTO Ask_com
+		<trim prefix=" (" suffix=")" suffixOverrides=",">
+			<if test="comName != null">
+				com_name,
+			</if>
+			<if test="comBautrate != null">
+				com_bautrate,
+			</if>
+			<if test="comEnable != null">
+				com_enable,
+			</if>
+			<if test="hostId!= null">
+				host_id,
+			</if>
+			<if test="comState != null">
+				com_state,
+			</if>
+			<if test="comJyw != null">
+				com_jyw,
+			</if>
+			<if test="comTzw != null">
+				com_tzw,
+			</if>
+			<if test="comSjw != null">
+				com_sjw,
+			</if>
+			<if test="comLkz != null">
+				com_lkz,
+			</if>
+			<if test="comMode != null">
+				com_mode,
+			</if>
+			<if test="comPort != null">
+				com_port,
+			</if>
+			<if test="comCollectiontime != null">
+				com_collectiontime,
+			</if>
+		</trim>
+		<trim prefix=" values(" suffix=")" suffixOverrides=",">
+			<if test="comName != null">
+				#{comName},
+			</if>
+			<if test="comBautrate != null">
+				#{comBautrate},
+			</if>
+			<if test="comEnable != null">
+				#{comEnable},
+			</if>
+			<if test="hostId != null">
+				#{hostId},
+			</if>
+			<if test="comState != null">
+				#{comState},
+			</if>
+			<if test="comJyw != null">
+				#{comJyw},
+			</if>
+			<if test="comTzw != null">
+				#{comTzw},
+			</if>
+			<if test="comSjw != null">
+				#{comSjw},
+			</if>
+			<if test="comLkz != null">
+				#{comLkz},
+			</if>
+			<if test="comMode != null">
+				#{comMode},
+			</if>
+			<if test="comPort != null">
+				#{comPort},
+			</if>
+			<if test="comCollectiontime != null">
+				#{comCollectiontime},
+			</if>
+		</trim>
+	</insert>
+	
+	<select id="findSelective" parameterType="com.jy23.entity.Com" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from Ask_com
+		<where>
+			<if test="comName != null">
+				AND com_name = #{comName}
+			</if>
+			<if test="comBautrate != null">
+				AND com_bautrate = #{comBautrate}
+			</if>
+			<if test="comEnable != null">
+				AND com_enable = #{comEnable}
+			</if>
+			<if test="hostId != null">
+				AND host_id= #{hostId}
+			</if>
+			<if test="comState != null">
+				AND com_state = #{comState}
+			</if>
+			<if test="comJyw != null">
+				AND com_jyw = #{comJyw}
+			</if>
+			<if test="comTzw != null">
+				AND com_tzw = #{comTzw}
+			</if>
+			<if test="comSjw != null">
+				AND com_sjw = #{comSjw}
+			</if>
+			<if test="comLkz != null">
+				AND com_lkz = #{comLkz}
+			</if>
+			<if test="comMode != null">
+				AND com_mode = #{comMode}
+			</if>
+			<if test="comPort != null">
+				AND com_port = #{comPort}
+			</if>
+		</where>
+	</select>
+	
+	<update id="updateSelective" parameterType="com.jy23.entity.Com" >
+		update Ask_com
+		<set>
+			<if test="comName != null ">
+				com_name = #{comName},
+			</if>
+			<if test="comBautrate != null ">
+				com_bautrate = #{comBautrate},
+			</if>
+			<if test="comEnable != null ">
+				com_enable = #{comEnable},
+			</if>
+			<if test="hostId != null ">
+				host_id= #{hostId},
+			</if>
+			<if test="comState != null ">
+				com_state = #{comState},
+			</if>
+			<if test="comJyw != null ">
+				com_jyw = #{comJyw},
+			</if>
+			<if test="comTzw != null ">
+				com_tzw = #{comTzw},
+			</if>
+			<if test="comSjw != null ">
+				com_sjw = #{comSjw},
+			</if>
+			<if test="comLkz != null ">
+				com_lkz = #{comLkz},
+			</if>
+			<if test="comMode != null ">
+				com_mode = #{comMode},
+			</if>
+			<if test="comPort != null ">
+				com_port = #{comPort},
+			</if>
+			<if test="comCollectiontime != null ">
+				com_collectiontime = #{comCollectiontime},
+			</if>
+		</set>
+		where com_id = #{comId}
+	</update>
+	
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+		delete from Ask_com 
+		where com_id = #{comId}
+	</delete>
+	
+</mapper>

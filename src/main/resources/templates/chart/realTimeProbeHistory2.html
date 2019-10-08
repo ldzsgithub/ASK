@@ -1,0 +1,90 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<header>
+    <head th:include="common/_header.html::commonHeader('历史数据-月份查询')"/>
+    <style>
+        .itemRoot {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            height: 130px;
+        }
+
+        .item {
+            order: 1;
+            width: 200px;
+            height: 100px;
+        }
+
+        .itemRootImg {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 65px;
+            height: 65px;
+        }
+
+        .item_title {
+            display: flex;
+            align-items: center;
+        }
+
+        .item_val {
+            display: flex;
+            align-items: center;
+        }
+    </style>
+</header>
+<body>
+<div class="page-container">
+    <form id="sForm" name="sForm" method="post">
+        <div class="text-l">
+            时间：
+            <input type="text" name="time" class="input-text " id="timeId" th:value="${time}" readonly="readonly"
+				 style="width: 150px;" onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM'})">
+            <button type="button" onclick="queryDate()" class="btn btn-success"><i class="Hui-iconfont">&#xe665;</i>搜索</button>
+        </div>
+        <div>
+            <table class="table table-border table-bordered table-bg">
+                <thead>
+                <tr class="text-c ">
+                    <td class="text-c">序号</td>
+                    <td class="text-c">工厂名称</td>
+                    <td class="text-c">主机名称</td>
+                    <td class="text-c">检测点名称</td>
+                    <td class="text-c">报警名称</td>
+                    <td class="text-c">报警数值</td>
+                    <td class="text-c">报警日期</td>
+                </tr>
+                </thead>
+                <tbody class="text-c ">
+                <tr th:each="list,iterStat:${alarmList}">
+                    <td th:text="${iterStat.count}"></td>
+                    <td th:text="${departmentName}"></td>
+                    <td th:text="${hostName}"></td>
+                    <td th:text="${probeName}"></td>
+                    <td>
+                    	<b style="color: #0F0"><span th:if="${list.alarmValue}<24">正常</span></b>
+                        <b style="color: #FF0"><span th:if="${list.alarmValue}>=24 and ${list.alarmValue}<100">一级报警</span></b>
+                        <b style="color: #F00"><span th:if="${list.alarmValue}>=100">二级报警</span></b>
+                    </td>
+                    <td th:text="${list.alarmValue}"></td>
+                    <td th:text="${#dates.format(list.alarmTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <input type="hidden" name="probeId" th:value="${probeId}">
+        <input type="hidden" name="hostId" th:value="${hostId}">
+    </form>
+</div>
+
+</body>
+
+<script type="text/javascript">
+    function queryDate(){
+        document.sForm.action="/history/toRealTimeProbeHistory";
+        document.sForm.submit();
+    }
+</script>
+</html>

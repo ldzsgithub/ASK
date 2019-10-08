@@ -1,0 +1,100 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<header>
+    <head th:include="common/_header.html::commonHeader('全部问题')"/>
+</header>
+<body>
+<article class="page-container">
+    <form id="sForm" name="sForm" class="form form-horizontal">
+    <div class="text-l">
+            搜索问题：
+            <input type="text" class="input-text" style="width:250px" placeholder="输入提交人/负责人/问题关键词" id="troubleTitle" name="troubleTitle" th:value="${troubleTitle}">
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" onclick="queryList()" class="btn btn-success radius"><i class="Hui-iconfont">&#xe665;</i>搜索
+            </button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" onclick="toAdd()" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i>新增问题
+            </button>
+        </div><br>
+        <table class="table table-border table-bordered table-bg">
+        	<thead>
+            	<tr class="text-c ">
+                	<th width="80">序号</th>
+                	<th>问题梗要</th>
+                	<th width="70">紧急程度</th>
+                	<th width="130">负责人</th>
+                	<th width="130">起始时间</th>
+                	<th width="130">解决期限</th>
+                	<th width="130">提交人</th>
+                	<th width="130">操作</th>
+            	</tr>
+            </thead>
+            <tbody>
+                <tr class="text-c" th:each="t,iterStat:${trouble}">
+                    <td th:text="${iterStat.index+1}"></td>
+                    <td th:text="${t.troubleTitle}"></td>
+                    <td>
+                    	<span th:if="${t.troubleLevel == 1}" class="label label-success radius">普通</span>
+                        <span th:if="${t.troubleLevel == 2}" class="label label-warning radius">紧急</span>
+                        <span th:if="${t.troubleLevel == 3}" class="label label-danger radius">非常紧急</span>
+                    </td>
+                    <td>
+                    	<a class="badge badge-secondary radius" th:text="${t.majorUser==null?null:t.majorUser.name}" 
+                    		th:onclick="userInfo([[${t.majorUser==null?null:t.majorUser.id}]])"></a>
+                    </td>
+                    <td th:text="${#dates.format(t.creatTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td th:text="${#dates.format(t.termTime, 'yyyy-MM-dd HH:mm:ss')}" 
+                    	th:style="${new java.util.Date().getTime()-t.termTime.getTime()>-86400000?'color:#F00;':
+                    	(new java.util.Date().getTime()-t.termTime.getTime()>-3*86400000?'color:#FFD700;':'color:#000;')}"></td>
+                    <td>
+                    	<a class="badge badge-secondary radius" th:text="${t.submitterUser==null?null:t.submitterUser.name}" 
+                    		th:onclick="userInfo([[${t.submitterUser==null?null:t.submitterUser.id}]])"></a>
+                    </td>
+					<td><a class="label label-success radius" th:onclick="'toPageJump('+(${t.id})+',0)'">查看</a></td>
+                </tr>
+            </tbody>
+        </table>
+	
+    </form>
+</article>
+</body>
+<script>
+	function queryList(){
+		document.sForm.action = "/trouble/toAllTrouble";
+		document.sForm.submit();
+	}
+	function toAdd(){
+		layer.open({
+			type : 2,
+			area : [ '100%', '100%' ],
+			anim : 3,
+			title : '新增问题',
+			content : '/trouble/toTroubleAdd'
+		});
+	}
+	function userInfo(id){
+		if(id==null) return;
+		layer.open({
+			type : 2,
+			area : [ '400px', '300px' ],
+			fixed : false,
+			maxmin : true,
+			anim : 3,
+			title : '用户信息',
+			content : '/users/userInfo?id=' + id
+		});
+	}
+	function toPageJump(id,flag){
+		layer.open({
+			type : 2,
+			area : [ '100%', '100%' ],
+			anim : 3,
+			title : '查看问题',
+			content : '/trouble/pageJump?id='+id+'&flag='+flag
+		});
+	}
+	function refreshPage() {
+        layer.closeAll();
+        window.location.href = "/trouble/toAllTrouble";
+    }
+</script>
+</html>

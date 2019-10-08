@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ss</title>
+<style type="text/css">
+ 	.img1{
+            position: absolute;
+            width: 25px;
+            height: 25px;
+         }
+</style>
+</head>
+<body>
+<script src="/lib/jquery/1.9.1/jquery.min.js"></script>
+<script src="/lib/bigDecimal.js"></script>
+<img id="map" src="/map/11.png" onclick="getPoint()" onmousewheel="mapZoom()" style="margin-left:10px;margin-top:10px"/>
+</body>
+<script>
+var imageWidth = $('#map').width();
+var imageHeight = $('#map').height();
+var realWidth = imageWidth;
+var realHeight = imageHeight;
+var zoom = 1;
+var marginLeft = $("#map").css('margin-left');
+var marginTop = $("#map").css('margin-top');
+function getPoint(){
+    alert(event.offsetX/realWidth+':'+event.offsetY/realHeight)
+    //$('#img').attr("src","test.jpg");
+}
+function mapZoom(){
+	if(zoom<0.6&&event.wheelDelta<0) return;
+	if(zoom>2&&event.wheelDelta>0) return;
+	var x=event.offsetX/zoom;
+	var y=event.offsetY/zoom;
+	zoom+=event.wheelDelta/1200;
+	$("#map").css('width',imageWidth*zoom);
+	$("#map").css('height',imageHeight*zoom);
+	realWidth = imageWidth * zoom;
+	realHeight = imageHeight * zoom;
+	var left=parseFloat(marginLeft.replace("px"))-x*(zoom-1)
+	var top=parseFloat(marginTop.replace("px"))-y*(zoom-1)
+	$("#map").css('margin-left',left);
+	$("#map").css('margin-top',top);
+}
+
+</script>
+</html>

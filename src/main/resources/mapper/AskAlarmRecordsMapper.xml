@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jy23.mapper.AskAlarmRecordsMapper">
+    <resultMap id="BaseResultMap" type="com.jy23.entity.AskAlarmRecords" >
+        <result property="probeBh" column="probe_bh" jdbcType="INTEGER" />
+        <result property="probeName" column="probe_name" jdbcType="NVARCHAR" />
+        <result property="alarmValue" column="alarm_value" jdbcType="FLOAT" />
+        <result property="alarmMc" column="alarm_mc" jdbcType="NVARCHAR" />
+        <result property="hostId" column="host_id" jdbcType="INTEGER" />
+        <result property="hostName" column="host_name" jdbcType="NVARCHAR" />
+        <result property="departmentId" column="department_id" jdbcType="INTEGER" />
+        <result property="departmentName" column="department_name" jdbcType="NVARCHAR" />
+        <result property="alarmTime" column="alarm_time" jdbcType="TIMESTAMP" />
+    </resultMap>
+
+    <sql id="Base_Column_List" >
+        probe_bh,probe_name,alarm_value,alarm_mc,host_id,host_name,department_id,department_name,alarm_time
+    </sql>
+
+    <insert id="insertSelective" parameterType="com.jy23.entity.AskAlarmRecords" useGeneratedKeys="true" keyProperty="xh">
+        INSERT INTO Ask_alarm_records
+        <trim prefix=" (" suffix=")" suffixOverrides=",">
+            <if test="probeBh != null">
+                probe_bh,
+            </if>
+            <if test="probeName != null">
+                probe_name,
+            </if>
+            <if test="alarmValue != null">
+                alarm_value,
+            </if>
+            <if test="alarmMc != null">
+                alarm_mc,
+            </if>
+            <if test="hostId != null">
+                host_id,
+            </if>
+            <if test="hostName != null">
+                host_name,
+            </if>
+            <if test="departmentId != null">
+                department_id,
+            </if>
+            <if test="departmentName != null">
+                department_name,
+            </if>
+            <if test="alarmTime != null">
+                alarm_time,
+            </if>
+        </trim>
+        <trim prefix=" values(" suffix=")" suffixOverrides=",">
+            <if test="probeBh != null">
+                #{probeBh},
+            </if>
+            <if test="probeName != null">
+                #{probeName},
+            </if>
+            <if test="alarmValue != null">
+                #{alarmValue},
+            </if>
+            <if test="alarmMc != null">
+                #{alarmMc},
+            </if>
+            <if test="hostId != null">
+                #{hostId},
+            </if>
+            <if test="hostName != null">
+                #{hostName},
+            </if>
+            <if test="departmentId != null">
+                #{departmentId},
+            </if>
+            <if test="departmentName != null">
+                #{departmentName},
+            </if>
+            <if test="alarmTime != null">
+                #{alarmTime},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateSelective" parameterType="com.jy23.entity.AskAlarmRecords" >
+        update Ask_alarm_records
+        <set>
+            <if test="probeBh != null">
+                probe_bh = #{probeBh},
+            </if>
+            <if test="probeName != null">
+                probe_name = #{probeName},
+            </if>
+            <if test="alarmValue != null">
+                alarm_value = #{alarmValue},
+            </if>
+            <if test="alarmMc != null">
+                alarm_mc = #{alarmMc},
+            </if>
+            <if test="hostId != null">
+                host_id = #{hostId},
+            </if>
+            <if test="hostName != null">
+                host_name = #{hostName},
+            </if>
+            <if test="departmentId != null">
+                department_id = #{departmentId},
+            </if>
+            <if test="departmentName != null">
+                department_name = #{departmentName},
+            </if>
+            <if test="alarmTime != null">
+                alarm_time = #{alarmTime},
+            </if>
+        </set>
+        where
+            xh = #{xh}
+    </update>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+        delete from Ask_alarm_records
+        where
+            xh = #{xh}
+    </delete>
+
+    <select id="findByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap" >
+        SELECT
+            <include refid="Base_Column_List" />
+        FROM
+            Ask_alarm_records
+        WHERE
+            xh = #{xh}
+    </select>
+
+    <select id="findSelective" parameterType="com.jy23.entity.AskAlarmRecords" resultMap="BaseResultMap" >
+        select
+            <include refid="Base_Column_List" />
+        from
+            Ask_alarm_records
+        <where>
+            <if test="probeBh != null">
+                AND probe_bh = #{probeBh}
+            </if>
+            <if test="probeName != null">
+                AND probe_name = #{probeName}
+            </if>
+            <if test="alarmValue != null">
+                AND alarm_value = #{alarmValue}
+            </if>
+            <if test="alarmMc != null">
+                AND alarm_mc = #{alarmMc}
+            </if>
+            <if test="hostId != null">
+                AND host_id = #{hostId}
+            </if>
+            <if test="hostName != null">
+                AND host_name = #{hostName}
+            </if>
+            <if test="departmentId != null">
+                AND department_id = #{departmentId}
+            </if>
+            <if test="departmentName != null">
+                AND department_name = #{departmentName}
+            </if>
+            <if test="alarmTime != null">
+                AND alarm_time = #{alarmTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="count" parameterType="com.jy23.entity.AskAlarmRecords" resultType="java.lang.Integer">
+        select
+            COUNT(*)
+        from
+            Ask_alarm_records
+        <where>
+            <if test="probeBh != null">
+                AND probe_bh = #{probeBh}
+            </if>
+            <if test="probeName != null">
+                AND probe_name = #{probeName}
+            </if>
+            <if test="alarmValue != null">
+                AND alarm_value = #{alarmValue}
+            </if>
+            <if test="alarmMc != null">
+                AND alarm_mc = #{alarmMc}
+            </if>
+            <if test="hostId != null">
+                AND host_id = #{hostId}
+            </if>
+            <if test="hostName != null">
+                AND host_name = #{hostName}
+            </if>
+            <if test="departmentId != null">
+                AND department_id = #{departmentId}
+            </if>
+            <if test="departmentName != null">
+                AND department_name = #{departmentName}
+            </if>
+            <if test="alarmTime != null">
+                AND alarm_time = #{alarmTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="findSelectiveByTime" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from
+        Ask_alarm_records
+        <where>
+        	alarm_time BETWEEN #{startTime} AND #{endTime}
+            <if test="hostId != null">
+                AND host_id = #{hostId}
+            </if>
+            <if test="probeBh != null">
+                AND probe_bh = #{probeBh}
+            </if>
+            <if test="startAlarmValue != null">
+                AND alarm_value  <![CDATA[ >= ]]>  #{startAlarmValue}
+            </if>
+            <if test="endAlarmValue != null">
+                AND alarm_value  <![CDATA[ <= ]]>  #{endAlarmValue}
+            </if>
+            <if test="departmentId != null">
+                AND department_id = #{departmentId}
+            </if>
+        </where>
+        order by alarm_time desc
+    </select>
+
+</mapper>

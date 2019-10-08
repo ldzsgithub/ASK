@@ -1,0 +1,107 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="common/_header.html::commonHeader('用户注册界面')" />
+<body>
+	<article class="page-container">
+		<form id="sForm" name="sForm" class="form form-horizontal">
+			<table class="table">
+				<tr class="text-c ">
+					<td class="text-l" colspan='1'><span class="c-red">*</span>用&nbsp;户&nbsp;名:</td>
+					<td class="text-l" colspan='1'><input type="text" class="input-text" id="users" name="users"></td>
+				</tr>
+
+				<tr class="text-c ">
+					<td class="text-l" colspan='1'><span class="c-red">*</span>密&emsp;&nbsp;&nbsp;码:</td>
+					<td class="text-l" colspan='1'><input type="password" class="input-text" id="password" name="password"></td>
+				</tr>
+				
+				<tr class="text-c ">
+					<td class="text-l" colspan='1'><span class="c-red">*</span>确认密码:</td>
+					<td class="text-l" colspan='1'><input type="password" class="input-text" id="repassword" name="repassword"></td>
+				</tr>
+				
+				<tr class="text-c ">
+					<td class="text-l" colspan='1'><span class="c-red">*</span>手机号码:</td>
+					<td class="text-l" colspan='1'><input type="text" class="input-text" id="phoneNumber" name="phoneNumber">
+					<!-- <button type="button" class="btn btn-primary radius">获取验证码</button> --></td>
+				</tr>
+			</table>
+			<div align="center"><a class="text-c " id='msg'><br/></a></div>
+			<div align="center">
+			<br>
+			<button type="button" class="btn btn-primary radius" onclick="btnSubmit()">提交</button>
+			</div>
+		</form>
+	</article>
+</body>
+
+<script>
+	$("#users").blur(function() {
+		$.ajax({
+			url : "registerUsers",
+			data : { users : $("#users").val() },
+			type : "POST",
+			dataType : "json",
+			success : function(data) {
+				if (data.code == 0){
+					$("#msg").html(data.msg);
+					$("#msg").css("color", "blue");
+				} else {
+					$("#msg").html(data.msg);
+					$("#msg").css("color", "red");
+				}
+			}
+		});
+	})
+	$("#password").blur(function() {
+		$.ajax({
+			url : "registerPassword",
+			data : { password : $("#password").val() },
+			type : "POST",
+			dataType : "json",
+			success : function(data) {
+				if (data.code == 0)
+				{
+					$("#msg").html("<br/>");
+				} else {
+					$("#msg").html(data.msg);
+					$("#msg").css("color", "red");
+				}
+			}
+		});
+	})
+	$("#repassword").blur(function() {
+		$.ajax({
+			url : "registerRepassword",
+			data : {password : $("#password").val(),repassword : $("#repassword").val() },
+			type : "POST",
+			dataType : "json", 
+			success : function(data) {
+				if (data.code == 0)
+				{
+					$("#msg").html("<br/>");
+				} else {
+					$("#msg").html(data.msg);
+					$("#msg").css("color", "red");
+				}
+			}
+		});
+	})
+	
+	function btnSubmit() {
+		$.ajax({
+			url : "registerAll",
+			data : {users : $("#users").val(),password : $("#password").val(),repassword : $("#repassword").val(),phoneNumber:$("#phoneNumber").val() },
+			type : "POST",
+			dataType : "json", 
+			success : function(data) {
+				if (data.code == 0){
+					document.sForm.action = "/users/save";
+					document.sForm.submit();
+				} else {
+					layer.msg(data.msg);
+				}
+			}
+		});
+	}
+</script>
+</html>

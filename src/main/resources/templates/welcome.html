@@ -1,0 +1,16 @@
+﻿<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<header>
+	<head th:include="common/_header.html::commonHeader('我的桌面')"/>
+</header>
+<body>
+<div class="page-container">
+	<p class="f-20 text-success">欢迎使用赛克云管理平台！</p>
+
+	<video controls="controls" autoplay="autoplay">
+		<source th:src="@{video/saikeyun.mp4}">
+	</video>
+
+</div>
+</body>
+</html>

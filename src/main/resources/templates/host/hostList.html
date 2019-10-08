@@ -1,0 +1,172 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<header>
+    <head th:include="common/_header.html::commonHeader('主机管理')"/>
+</header>
+<body>
+<div class="page-container">
+    <form id="sForm" name="sForm" method="post">
+        <div class="text-l">
+            主机名称：
+            <input type="text" class="input-text" style="width:250px" placeholder="输入主机名称" id="hostNameId" name="hostName" th:value="${host.hostName}">
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" onclick="queryDate()" class="btn btn-success radius"><i class="Hui-iconfont">&#xe665;</i>搜索
+            </button>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <button type="button" onclick="toHostJump(true,-1)" class="btn btn-primary radius"><i class="Hui-iconfont">&#xe600;</i>添加主机
+            </button>
+        </div>
+
+        <div class="mt-20">
+            <table class="table table-border table-bordered table-bg">
+                <thead>
+                <tr class="text-c">
+                    <th width="50">序号</th>
+                    <th width="350">主机名称</th>
+                    <th width="350">主机位置</th>
+                    <th width="80">主机地址</th>
+                    <th width="80">通道数量</th>
+                    <th width="80">启用状态</th>
+                    <th width="80">通讯状态</th>
+                    <th width="80">物联网号码</th>
+                    <th width="80">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr class="text-c" th:each="list,iterStat:${list}">
+                    <td th:text="${iterStat.count}+${pageSize}*(${pageNo}-1)"></td>
+                    <td th:text="${list.hostName}"></td>
+                    <td th:text="${list.hostPosition}"></td>
+                    <td th:text="${list.hostAddress}"></td>
+                    <td th:text="${list.numberChannels}"></td>
+
+                    <td th:if="${list.hostEnable}== 0"><span class="label label-success radius">启用</span></td>
+                    <td th:if="${list.hostEnable}== 1"><span class="label radius">停用</span></td>
+                    <td th:if="${list.hostEnable}== -1"><span class="label label-danger radius">-1</span></td>
+
+                    <td>
+                        <span th:if="${list.transStatus == -1}" class="label label-danger radius">断开</span>
+                        <span th:if="${list.transStatus > -1}" class="label label-success radius">正常</span>
+                    </td>
+
+                    <td th:text="${list.registerCard}"></td>
+                    <td>
+                        <a th:onclick="'showComInfo('+${list.hostId}+')'" class="label label-success radius">com信息</a>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a th:onclick="'toHostJump(false,'+(${list.hostId})+')'" class="label label-primary radius">修改</a>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a th:onclick="'deleteHost('+(${list.hostId})+')'" class="label radius">删除</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <div id="layerPageId" style="width: 100%;text-align: center;margin-top: 10px;"></div>
+        <input type="hidden" th:value="${pages}" id="pagesId" name="pages">
+        <input type="hidden" th:value="${pageNo}" id="pageNoId" name="pageNo">
+        <input type="hidden" th:value="${pageSize}" id="pageSizeId" name="pageSize">
+        <input type="hidden" th:value="${authority}" id="authority" name="authority">
+    </form>
+</div>
+</body>
+<script>
+if(parent.$("#authority").val()!=""&&parent.$("#authority").val()!=null){
+	if($("#authority").val()==""||$("#authority").val()==null){
+		$("#authority").val(parent.$("#authority").val());
+		queryDate();
+	}
+} else {
+	layer.msg("当前用户没有权限");
+}
+   
+        laypage({
+            cont: 'layerPageId',
+            pages: $("#pagesId").val(), 	//总页数
+            curr: $("#pageNoId").val(),		//当前页数
+            jump: function (e, first) { 	//触发分页后的回调
+                if (!first) { 				//一定要加此判断，否则初始时会无限刷新
+                    document.getElementById("pageNoId").value = e.curr;
+                    document.sForm.action = "/host/findSelectivePageWeb";
+                    document.sForm.submit();
+                }
+            }
+        });
+
+    function queryDate() {
+        $("#pageNoId").val("1");
+        $("#pages").val("");
+        $("#pageSizeId").val("");
+        document.sForm.action = "/host/findSelectivePageWeb";
+        document.sForm.submit();
+    }
+
+    function toHostJump(isAdd, id) {
+        var index = layer.open({
+            type: 2,
+            area: ['750px', '450px'],
+            fixed: false,
+            maxmin: true,
+            anim: 3,
+            content: '/host/pageJump?isAdd=' + isAdd + '&id=' + id + '&authority=' + $("#authority").val()
+        });
+        layer.full(index);
+    }
+
+
+    function showComInfo(id) {
+        common_ajax.defaultFunc(
+            '/com/findSelective?hostId=' + id,
+            $("#sForm").serialize(),
+            function (response) {
+                if (response.body.length == 0) {
+                    //询问框
+                    layer.confirm('当前主机没有配置Com信息，是否进行配置？', {
+                        btn: ['是', '否'] //按钮
+                    }, function () {
+                        var index = layer.open({
+                            type: 2,
+                            area: ['800px', '450px'],
+                            fixed: false, //不固定
+                            maxmin: true,
+                            anim: 3,
+                            content: '/com/toUpdate?hostId=' + id
+                        });
+                        layer.full(index);
+                    });
+                } else {
+                    var index = layer.open({
+                        type: 2,
+                        area: ['800px', '450px'],
+                        fixed: false, //不固定
+                        maxmin: true,
+                        anim: 3,
+                        content: '/com/toSave?hostId=' + id
+                    });
+                    layer.full(index);
+                }
+            }
+        );
+    }
+
+    function deleteHost(id) {
+        layer.confirm('您确定要删除么？', {
+            btn: ['是', '否'] //按钮
+        }, function () {
+            common_ajax.defaultFunc(
+                '/host/deleteById',
+                {"hostId":id},
+                function (response) {
+                    document.sForm.action = "/host/findSelectivePageWeb";
+                    document.sForm.submit();
+                }
+            );
+        });
+    }
+
+    function refreshPage() {
+        layer.closeAll();
+        window.location.href = "/host/findSelectivePageWeb";
+    }
+</script>
+</html>

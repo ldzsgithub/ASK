@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+	<script src="/lib/echarts/3.4.0/echarts.common.min.js"></script>
+</body>
+<script>
+var myChart2 = echarts.init(document.getElementById('p2'));
+myChart2.setOption({
+	backgroundColor: "lightgrey",
+	tooltip : {
+	    trigger: 'axis',
+	    axisPointer : {
+	    	type : 'shadow'
+	    }
+	},
+    legend: {
+        data:['报警','正常'],
+        textStyle: {
+        	fontSize : 18,
+        	fontStyle : 'bolder'
+        }
+    },
+    grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '9%',
+        containLabel: true
+    },
+    xAxis : [
+        {
+        	axisLabel : {
+                 interval : 0,
+                 rotate : "45",
+             	 textStyle: {
+             		 fontSize : 13,
+             		 fontStyle : 'bolder'
+             	 }
+             },
+            type : 'category',
+            data : []
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value',
+            axisLabel : {
+                interval : 0,
+            	textStyle: {
+            		fontSize : 13,
+            		fontStyle : 'bolder'
+            	}
+            }
+        }
+    ],
+    series : [
+        {
+            name:'报警',
+            type:'bar',
+            stack: '1',
+            data:[]
+        },
+        {
+            name:'正常',
+            type:'bar',
+            stack: '1',
+            data:[]
+        }
+    ]
+});
+
+$.ajax({
+    type : "post",
+    async : true,
+    url : "pp2",
+    dataType : "json",
+    success : function(result) {
+    	var a=[];
+    	for(var i=0;i<result.body.length;i++){
+    		a.push(result.body[i])
+    	}
+        if (result) {
+        	myChart2.setOption({
+        		xAxis:[{
+        			data:a
+        		}]
+        	});
+        }
+    },
+    erro : function (){
+    	alert("柱状图数据加载失败");
+    }
+})
+
+$.ajax({
+    type : "post",
+    async : true,
+    url : "ppp2",
+    dataType : "json",
+    success : function(result) {
+    	var alarm=[];
+    	var noAlarm=[];
+    	for(var i=0;i<result.body.length;i++){
+    		alarm.push(result.body[i].alarm);
+    		noAlarm.push(result.body[i].noAlarm);
+    	}
+    	if (result) {
+        	myChart2.setOption({
+        		series : [
+        	        {
+        	            data:alarm
+        	        },
+        	        {
+        	            data:noAlarm
+        	        }
+        	    ]
+        	});
+        }
+        
+    },
+    erro : function (){
+    	alert("柱状图数据加载失败");
+    }
+})
+</script>
+</html>

@@ -1,0 +1,93 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<header>
+    <head th:include="common/_header.html::commonHeader('扇形图')"/>
+    <script src="/lib/echarts/3.4.0/echarts.common.min.js"></script>
+</header>
+<div class="page-container">
+    <form id="sForm" name="sForm" method="post">
+        <div class="text-l">
+            负责人：
+            <select name="users" id="users" class="input-text" style="width: 100px;">
+            	<option value="-1">全部</option>
+            	<option th:each="u:${users}" th:value=${u.id} th:text=${u.name}></option>
+            </select>
+            日期：
+            <input type="text" name="sTime" class="input-text " id="sTime" readonly="readonly" style="width: 100px;"
+            	th:value="${#dates.format(sTime, 'yyyy-MM')}" onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM'})">
+            <button type="button" onclick="queryDate()" class="btn btn-success"><i class="Hui-iconfont">&#xe665;</i>查询</button>
+        </div>
+        <br>
+        <input type="hidden" name="authority" id="authority">
+    </form>
+</div>
+    <div id="main1" style="width: 90%;height:85%;margin-left:5%"></div>
+</body>
+<script type="text/javascript">
+	var myChart = echarts.init(document.getElementById('main1'));
+	var option = {
+		    title : {
+		        text: '问题数据统计',
+		        x:'center'
+		    },
+		    tooltip : {
+		        trigger: 'item',
+		        formatter: "{a} <br/>{b} : {c} ({d}%)"
+		    },
+		    legend: {
+		        orient: 'vertical',
+		        left: 'left',
+		        data: ['遗留未解决','遗留已解决','遗留交付上级','已解决','未解决','交付上级']
+		    },
+		    series : [
+		        {
+		            name: $("#sTime").val(),
+		            type: 'pie',
+		            radius : '70%',
+		            center: ['50%', '55%'],
+		            data:[
+		                {value:0, name:'遗留未解决'},
+		                {value:0, name:'遗留已解决'},
+		                {value:0, name:'遗留交付上级'},
+		                {value:0, name:'已解决'},
+		                {value:0, name:'未解决'},
+		                {value:0, name:'交付上级'}
+		            ]
+		        }
+		    ]
+		};
+	myChart.setOption(option);
+	
+	queryDate();
+function queryDate(){
+	if($("#sTime").val()==""){
+		layer.msg("请选择要查询的月份");
+		return
+	}
+	if(new Date($("#sTime").val())>new Date()){
+		layer.msg("请选择正确的月份 ");
+		return
+	}
+	 $.ajax({
+		url : "queryTroubleData",
+		data : {id : $("#users").val(),sTime : $("#sTime").val()},
+		type : "POST",
+		dataType : "json", 
+		success : function(data) {
+			if (data.code == 0){
+				 myChart.setOption(
+						{series : [{data : [
+									{value : data.body[0], name:'遗留未解决'},
+								    {value : data.body[1], name:'遗留已解决'},
+								    {value : data.body[2], name:'遗留交付上级'},
+								    {value : data.body[3], name:'已解决'},
+								    {value : data.body[4], name:'未解决'},
+								    {value : data.body[5], name:'交付上级'},
+						 			]} ]  });  
+			} else {
+				layer.msg("查询失败");
+			}
+		}
+	}); 
+}
+</script>
+</html>

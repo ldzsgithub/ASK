@@ -1,0 +1,182 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="common/_header.html::commonHeader('折线图')"/>
+<script src="/lib/echarts/3.4.0/echarts.common.min.js"></script>
+<div class="page-container">
+    <form id="sForm" name="sForm" method="post">
+        <div class="text-l">
+            部门名称：
+            <select name="departmentId" id="departmentId" class="input-text" style="width: 100px;"></select>
+            主机名称：
+            <select name="hostId" id="hostId" class="input-text" style="width: 200px;" onchange="hostSelectOnChange()" ></select>
+            日期：
+            <input type="text" name="sTime" class="input-text " id="sTime" readonly="readonly" style="width: 100px;"
+            	th:value="${#dates.format(sTime, 'yyyy-MM-dd')}" onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM-dd'})">
+            <button type="button" onclick="queryDate()" class="btn btn-success"><i class="Hui-iconfont">&#xe665;</i>查询</button>
+        </div>
+        <br>
+        <input type="hidden" name="authority" id="authority">
+    </form>
+</div>
+<div id="main1" style="width: 90%;height:85%;"></div>
+</body>
+<script>
+$("#authority").val(parent.$("#authority").val());
+common_ajax.defaultFunc("/userQx/selectAuthority", {"authority": parent.$("#authority").val()}, function (response) {
+    $('#probeBhId').empty();
+    $('#departmentId').empty();
+    if (response.body.length == 0) {
+        layer.msg("当前用户没有权限");
+        return;
+    }
+    //$('#departmentId').append("<option value=\"-1\">---</option>");
+    for (var i = 0; i < response.body.length; i++) {
+        $('#departmentId').append("<option value=\"" + response.body[i].departmentId + "\">" + response.body[i].departmentName + "</option>");
+    }
+})
+fff();
+$("#departmentId").bind("change",function(){
+    fff();
+});
+function fff() {
+	$("#hostId").empty();
+    $('#probeBhId').empty();
+    //$("#hostId").append('<option value="-1">---</option>');
+    if($("#departmentId").val()==-1||$("#departmentId").val()==null) return;
+    common_ajax.defaultFunc("/host/findSelective", {"departmentId":$("#departmentId").val()},function (response) {
+    	if(response.body.length<=0) return;
+		for(var i=0;i<response.body.length;i++){
+			$("#hostId").append('<option value="'+response.body[i].hostId+'">'+response.body[i].hostName+'</option>');
+		}
+	});
+}
+function hostSelectOnChange() {
+    common_ajax.defaultFunc("/probe/findSelective", {"hostId": $('#hostId').val()}, function (response) {
+        if (response.body.length == 0) {
+            layer.msg("当前主机下没有探头");
+            return;
+        }
+    })
+}
+
+	var myChart = echarts.init(document.getElementById('main1'));
+	var option = {
+		title: {
+			text: '报警数据',
+			//subtext: '',
+			x: 'center'
+		},
+		tooltip: {},
+		legend: {
+			orient: 'vertical',	//垂直
+			right: -15,
+			top: 40,
+			data:[]
+		},
+		xAxis: {
+			data: ["00:00","01:00","02:00","03:00","04:00","05:00","06:00","07:00","08:00","09:00","10:00","11:00",
+				"12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00","20:00","21:00","22:00","23:00"]
+		},
+		yAxis: {
+			name:'报警值'
+		},
+		series: [{name: '', type: 'line', smooth: true, data: ''},
+				{name: '', type: 'line', smooth: true, data: ''},
+				{name: '', type: 'line', smooth: true, data: ''},
+				{name: '', type: 'line', smooth: true, data: ''},
+				{name: '', type: 'line', smooth: true, data: ''},
+				{name: '', type: 'line', smooth: true, data: ''},
+				{name: '', type: 'line', smooth: true, data: ''},
+				{name: '', type: 'line', smooth: true, data: ''},
+				{name: '', type: 'line', smooth: true, data: ''},
+				{name: '', type: 'line', smooth: true, data: ''},
+				{name: '', type: 'line', smooth: true, data: ''},
+				{name: '', type: 'line', smooth: true, data: ''},
+				{name: '', type: 'line', smooth: true, data: ''},
+				{name: '', type: 'line', smooth: true, data: ''},
+				{name: '', type: 'line', smooth: true, data: ''},
+				{name: '', type: 'line', smooth: true, data: ''},]
+	};
+	myChart.setOption(option);
+
+//queryDate();
+function queryDate(){
+	if($("#departmentId").val()==""){
+		layer.msg("请选择部门名称");
+		return
+	}
+	if($("#hostId").val()==""){
+		layer.msg("请选择部门名称");
+		return
+	}
+	if($("#sTime").val()==""){
+		layer.msg("请选择日期");
+		return
+	}
+	if(new Date($("#sTime").val())>new Date()){
+		layer.msg("请选择正确的日期 ");
+		return
+	}
+	 $.ajax({
+		url : "queryName",
+		data : {hostId : $("#hostId").val()},
+		type : "POST",
+		dataType : "json", 
+		success : function(data) {
+			if (data.code == 0){
+				 myChart.setOption(
+						{legend : {data : data.body} ,
+						series : [{name : data.body[0]},
+								   {name : data.body[1]},
+								   {name : data.body[2]},
+								   {name : data.body[3]},
+								   {name : data.body[4]},
+								   {name : data.body[5]},
+								   {name : data.body[6]},
+								   {name : data.body[7]},
+								   {name : data.body[8]},
+								   {name : data.body[9]},
+								   {name : data.body[10]},
+								   {name : data.body[11]},
+								   {name : data.body[12]},
+								   {name : data.body[13]},
+								   {name : data.body[14]},
+								   {name : data.body[15]},
+								  ]}   );  
+			} else {
+				layer.msg("查询失败");
+			}
+		}
+	}); 
+	$.ajax({
+		url : "query",
+		data : {departmentId : $("#departmentId").val(),hostId : $("#hostId").val(),sTime : $("#sTime").val() },
+		type : "POST",
+		dataType : "json", 
+		success : function(data) {
+			if (data.code == 0){
+				myChart.setOption(
+						{series : [{data : data.body[0]},
+								   {data : data.body[1]},
+								   {data : data.body[2]},
+								   {data : data.body[3]},
+								   {data : data.body[4]},
+								   {data : data.body[5]},
+								   {data : data.body[6]},
+								   {data : data.body[7]},
+								   {data : data.body[8]},
+								   {data : data.body[9]},
+								   {data : data.body[10]},
+								   {data : data.body[11]},
+								   {data : data.body[12]},
+								   {data : data.body[13]},
+								   {data : data.body[14]},
+								   {data : data.body[15]},
+								  ]} );  
+			} else {
+				layer.msg("查询失败");
+			}
+		}
+	});
+}
+</script>
+</html>

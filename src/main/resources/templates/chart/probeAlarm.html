@@ -1,0 +1,41 @@
+﻿<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<header>
+    <meta charset="UTF-8"/>
+</header>
+<body>
+<div class="page-container">
+    <form id="sForm" name="sForm" method="post">
+        <div class="mt-20">
+            <table class="table table-border table-bordered table-bg">
+                <thead>
+                <tr class="text-c ">
+                    <td class="text-c">序号</td>
+                    <td class="text-c">工厂名称</td>
+                    <td class="text-c">主机名称</td>
+                    <td class="text-c">检测点名称</td>
+                    <td class="text-c">报警名称</td>
+                    <td class="text-c">报警数值</td>
+                    <td class="text-c">报警日期</td>
+                </tr>
+                </thead>
+                <tbody class="text-c ">
+                <tr th:each="list,iterStat:${alarmList}">
+                    <td th:text="${iterStat.count}"></td>
+                    <td th:text="${list.departmentName}"></td>
+                    <td th:text="${list.hostName}"></td>
+                    <td th:text="${list.probeName}"></td>
+                    <td>
+                        <b style="color: #FF0"><span th:if="${list.alarmMc}== '一级报警'">一级报警</span></b>
+                        <b style="color: #F00"><span th:if="${list.alarmMc}== '二级报警'">二级报警</span></b>
+                    </td>
+                    <td th:text="${list.alarmValue}"></td>
+                    <td th:text="${#dates.format(list.alarmTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
+</div>
+</body>
+</html>

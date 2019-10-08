@@ -1,0 +1,46 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<header>
+	<head th:include="common/_header.html::commonHeader('用户信息')" />
+</header>
+<body>
+	<article class="page-container">
+		<form id="sForm" name="sForm" method="post" class="form form-horizontal">
+			<div style="text-align:center">
+				选择下次校验日期
+			</div>
+			<br/><br/>
+			<input type="text" name="sTime" id="sTime" style="text-align:center" class="input-text" onfocus="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM-dd'})">
+			<br/><br/><br/>
+			<div style="text-align:center">
+				<button type="button" onclick="updateDate()" class="btn btn-primary radius">修改</button>
+			</div>
+			<input type="hidden" th:value="${probeId}" id='probeId' name='probeId'>
+		</form>
+	</article>
+</body>
+<script>
+	function updateDate(){
+		if($("#sTime").val()==""){
+			layer.msg("请选择下次校验时间")
+			return
+		}
+		if(new Date($("#sTime").val())<new Date()){
+			layer.msg("请选择正确的时间")
+			return
+		}
+		layer.confirm('更新校验时间？', {
+            btn: ['更新', '取消'] //按钮
+        },function(){
+        	common_ajax.defaultFunc(
+        			'updateProbeCheck',
+        			{'probeId' : $("#probeId").val(),'sTime':$("#sTime").val()},
+        			function(response){
+        				layer.msg(response.msg);
+        				setTimeout(window.parent.refreshPage(),"500");
+        			}
+        	);
+        })
+		
+	}
+</script>
+</html>
